@@ -1,31 +1,27 @@
 package db.manga.repository
 
+import db.manga.MangasDbConfigProvider
 import db.manga.model.{Franchises, Genres, MangaFranchises, MangaGenres, Mangas}
 import dto.Manga
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
-import play.db.NamedDatabase
-import slick.jdbc.JdbcProfile
 import slick.jdbc.PostgresProfile.api._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class MangaRepository @Inject()(@NamedDatabase("mangas_db") val dbConfigProvider: DatabaseConfigProvider)
-                               (implicit ec: ExecutionContext)
-    extends HasDatabaseConfigProvider[JdbcProfile] {
+class MangaRepository @Inject()(val mangasDbConfigProvider: MangasDbConfigProvider)(implicit ec: ExecutionContext) {
 
-    def findAll(): Future[Seq[Manga]] = db.run {
+    def findAll(): Future[Seq[Manga]] = mangasDbConfigProvider.run {
         Mangas.table.result
     }
 
-    def findById(id: Int): Future[Option[Manga]] = db.run {
+    def findById(id: Int): Future[Option[Manga]] = mangasDbConfigProvider.run {
         Mangas.table
             .filter(manga => manga.id === id)
             .result.headOption
     }
 
-    def findAllByTitle(title: String): Future[Seq[Manga]] = db.run {
+    def findAllByTitle(title: String): Future[Seq[Manga]] = mangasDbConfigProvider.run {
         val titleLike = s"%$title%"
 
         Mangas.table
@@ -33,7 +29,7 @@ class MangaRepository @Inject()(@NamedDatabase("mangas_db") val dbConfigProvider
             .result
     }
 
-    def findAllByFranchise(franchise: String): Future[Seq[Manga]] = db.run {
+    def findAllByFranchise(franchise: String): Future[Seq[Manga]] = mangasDbConfigProvider.run {
         val franchiseLike = s"%$franchise%"
 
         val query = for {
@@ -45,7 +41,7 @@ class MangaRepository @Inject()(@NamedDatabase("mangas_db") val dbConfigProvider
         query.distinct.result
     }
 
-    def findAllByGenres(genres: Seq[String]): Future[Seq[Manga]] = db.run {
+    def findAllByGenres(genres: Seq[String]): Future[Seq[Manga]] = mangasDbConfigProvider.run {
         val genresLowerCase = genres.map(_.toLowerCase)
 
         val query = for {
