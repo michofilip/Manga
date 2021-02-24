@@ -8,13 +8,15 @@ class Files(tag: Tag) extends Table[File](tag, "files") {
 
     def key = column[String]("key", O.PrimaryKey)
 
-    def name = column[String]("name")
-
-    def size = column[Long]("size")
+    def fileName = column[String]("file_name")
 
     def content = column[Array[Byte]]("content")
 
-    def * = (name, size, content, key).mapTo[File]
+    def contentLength = column[Long]("content_length")
+
+    def contentType = column[String]("content_type")
+
+    def * = (fileName, content, contentLength, contentType, key).mapTo[File]
 
 }
 

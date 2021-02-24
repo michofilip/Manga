@@ -20,9 +20,9 @@ class FileController @Inject()(val controllerComponents: ControllerComponents,
             case Right(file) =>
                 val byteString: ByteString = ByteString(file.content)
                 val source: Source[ByteString, NotUsed] = Source.single(byteString)
-                val contentLength = Some(file.size)
-                val contentType = Some("image/jpeg")
-                val fileName = Option(file.name)
+                val contentLength = Some(file.contentLength)
+                val contentType = Some(file.contentType)
+                val fileName = Option(file.fileName)
 
                 Ok.sendEntity(
                     entity = HttpEntity.Streamed(source, contentLength, contentType),
