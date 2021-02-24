@@ -9,6 +9,6 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class FilesDbConfigProvider @Inject()(@NamedDatabase("files_db") val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
+class FilesDbConfigProvider @Inject()(@NamedDatabase("files_db") protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
     final def run[R](a: DBIOAction[R, NoStream, Nothing]): Future[R] = db.run(a)
 }
