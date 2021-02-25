@@ -4,7 +4,7 @@ import dto.Page
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery
 
-class Pages(tag: Tag) extends Table[Page](tag, "pages") {
+class PageEntity(tag: Tag) extends Table[Page](tag, "page") {
 
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 
@@ -16,12 +16,12 @@ class Pages(tag: Tag) extends Table[Page](tag, "pages") {
 
     def * = (key, chapterId, pageNr, id).mapTo[Page]
 
-    def chapter = foreignKey("chapter_fk", pageNr, Chapters.table)(_.id)
+    def chapter = foreignKey("chapter_fk", pageNr, ChapterEntity.table)(_.id)
 
 }
 
-object Pages {
-    val table = TableQuery[Pages]
+object PageEntity {
+    val table = TableQuery[PageEntity]
 }
 
 

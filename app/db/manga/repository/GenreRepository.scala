@@ -1,7 +1,7 @@
 package db.manga.repository
 
 import db.manga.MangasDbConfigProvider
-import db.manga.model.{Genres, MangaGenres, Mangas}
+import db.manga.model.{GenreEntity, MangaGenreEntity, MangaEntity}
 import dto.Genre
 import slick.jdbc.PostgresProfile.api._
 
@@ -12,14 +12,14 @@ import scala.concurrent.{ExecutionContext, Future}
 class GenreRepository @Inject()(val mangasDbConfigProvider: MangasDbConfigProvider)(implicit ec: ExecutionContext) {
 
     def findAll(): Future[Seq[Genre]] = mangasDbConfigProvider.run {
-        Genres.table.result
+        GenreEntity.table.result
     }
 
     def findAllByMangaId(mangaId: Int): Future[Seq[Genre]] = mangasDbConfigProvider.run {
         val query = for {
-            manga <- Mangas.table if manga.id === mangaId
-            mangaGenre <- MangaGenres.table if mangaGenre.mangaId === manga.id
-            genre <- Genres.table if genre.id === mangaGenre.genreId
+            manga <- MangaEntity.table if manga.id === mangaId
+            mangaGenre <- MangaGenreEntity.table if mangaGenre.mangaId === manga.id
+            genre <- GenreEntity.table if genre.id === mangaGenre.genreId
         } yield genre
 
         query.result
