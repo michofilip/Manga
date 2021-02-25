@@ -2,6 +2,7 @@ package service
 
 import db.manga.repository.{ChapterRepository, PageRepository}
 import dto.{Chapter, ChapterDetails}
+import utils.ExceptionUtils
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -27,11 +28,7 @@ class ChapterService @Inject()(val chapterRepository: ChapterRepository,
 
         chapterRepository.findById(chapterId).flatMap {
             case None =>
-                Future.successful {
-                    Left {
-                        new NoSuchElementException(s"Chapter id $chapterId not found!")
-                    }
-                }
+                ExceptionUtils.noSuchElementException(s"Chapter id $chapterId not found!")
 
             case Some(chapter) =>
                 val result = for {

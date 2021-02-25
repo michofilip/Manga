@@ -2,6 +2,7 @@ package service
 
 import db.file.repository.FileRepository
 import dto.File
+import utils.ExceptionUtils
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -13,11 +14,7 @@ class FileService @Inject()(val fileRepository: FileRepository)
     def findByKey(key: String): Future[Either[Throwable, File]] = {
         fileRepository.findByKey(key).flatMap {
             case None =>
-                Future.successful {
-                    Left {
-                        new NoSuchElementException(s"File key $key not found!")
-                    }
-                }
+                ExceptionUtils.noSuchElementException(s"File key $key not found!")
 
             case Some(file) =>
                 Future.successful {
