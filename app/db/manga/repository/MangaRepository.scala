@@ -1,7 +1,7 @@
 package db.manga.repository
 
 import db.manga.MangasDbConfigProvider
-import db.manga.model.{Franchises, Genres, MangaFranchises, MangaGenres, Mangas}
+import db.manga.model.{FranchiseEntity, GenreEntity, MangaFranchiseEntity, MangaGenreEntity, MangaEntity}
 import dto.Manga
 import slick.jdbc.PostgresProfile.api._
 
@@ -12,11 +12,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class MangaRepository @Inject()(val mangasDbConfigProvider: MangasDbConfigProvider)(implicit ec: ExecutionContext) {
 
     def findAll(): Future[Seq[Manga]] = mangasDbConfigProvider.run {
-        Mangas.table.result
+        MangaEntity.table.result
     }
 
     def findById(id: Int): Future[Option[Manga]] = mangasDbConfigProvider.run {
-        Mangas.table
+        MangaEntity.table
             .filter(manga => manga.id === id)
             .result.headOption
     }
@@ -24,7 +24,7 @@ class MangaRepository @Inject()(val mangasDbConfigProvider: MangasDbConfigProvid
     def findAllByTitle(title: String): Future[Seq[Manga]] = mangasDbConfigProvider.run {
         val titleLike = s"%$title%"
 
-        Mangas.table
+        MangaEntity.table
             .filter(manga => manga.title.toLowerCase like titleLike)
             .result
     }
@@ -33,9 +33,9 @@ class MangaRepository @Inject()(val mangasDbConfigProvider: MangasDbConfigProvid
         val franchiseLike = s"%$franchise%"
 
         val query = for {
-            manga <- Mangas.table
-            mangaFranchise <- MangaFranchises.table if manga.id === mangaFranchise.mangaId
-            franchise <- Franchises.table if (franchise.id === mangaFranchise.franchiseId) && (franchise.name.toLowerCase like franchiseLike)
+            manga <- MangaEntity.table
+            mangaFranchise <- MangaFranchiseEntity.table if manga.id === mangaFranchise.mangaId
+            franchise <- FranchiseEntity.table if (franchise.id === mangaFranchise.franchiseId) && (franchise.name.toLowerCase like franchiseLike)
         } yield manga
 
         query.distinct.result
@@ -45,9 +45,9 @@ class MangaRepository @Inject()(val mangasDbConfigProvider: MangasDbConfigProvid
         val genresLowerCase = genres.map(_.toLowerCase)
 
         val query = for {
-            manga <- Mangas.table
-            mangaGenre <- MangaGenres.table if manga.id === mangaGenre.mangaId
-            genre <- Genres.table if genre.id === mangaGenre.genreId && genre.name.toLowerCase.inSet(genresLowerCase)
+            manga <- MangaEntity.table
+            mangaGenre <- MangaGenreEntity.table if manga.id === mangaGenre.mangaId
+            genre <- GenreEntity.table if genre.id === mangaGenre.genreId && genre.name.toLowerCase.inSet(genresLowerCase)
         } yield manga
 
         query.distinct.result

@@ -1,6 +1,6 @@
 -- !Ups
 
-CREATE TABLE IF NOT EXISTS files
+CREATE TABLE IF NOT EXISTS file
 (
     key            VARCHAR PRIMARY KEY,
     file_name      VARCHAR NOT NULL,
@@ -12,4 +12,4 @@ CREATE TABLE IF NOT EXISTS files
 
 -- !Downs
 
-DROP TABLE IF EXISTS files CASCADE;
+DROP TABLE IF EXISTS file CASCADE;
