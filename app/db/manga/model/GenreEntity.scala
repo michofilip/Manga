@@ -4,7 +4,7 @@ import dto.Genre
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery
 
-class Genres(tag: Tag) extends Table[Genre](tag, "genres") {
+class GenreEntity(tag: Tag) extends Table[Genre](tag, "genre") {
 
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 
@@ -14,8 +14,8 @@ class Genres(tag: Tag) extends Table[Genre](tag, "genres") {
 
 }
 
-object Genres {
-    val table = TableQuery[Genres]
+object GenreEntity {
+    val table = TableQuery[GenreEntity]
 }
 
 

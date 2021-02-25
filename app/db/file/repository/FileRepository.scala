@@ -1,7 +1,7 @@
 package db.file.repository
 
 import db.file.FilesDbConfigProvider
-import db.file.model.Files
+import db.file.model.FileEntity
 import dto.File
 import slick.jdbc.PostgresProfile.api._
 
@@ -12,7 +12,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class FileRepository @Inject()(val filesDbConfigProvider: FilesDbConfigProvider)(implicit ec: ExecutionContext) {
 
     def findByKey(key: String): Future[Option[File]] = filesDbConfigProvider.run {
-        Files.table
+        FileEntity.table
             .filter(file => file.key === key)
             .result.headOption
     }

@@ -4,7 +4,7 @@ import dto.Franchise
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery
 
-class Franchises(tag: Tag) extends Table[Franchise](tag, "franchises") {
+class FranchiseEntity(tag: Tag) extends Table[Franchise](tag, "franchise") {
 
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 
@@ -14,8 +14,8 @@ class Franchises(tag: Tag) extends Table[Franchise](tag, "franchises") {
 
 }
 
-object Franchises {
-    val table = TableQuery[Franchises]
+object FranchiseEntity {
+    val table = TableQuery[FranchiseEntity]
 }
 
 

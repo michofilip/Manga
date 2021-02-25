@@ -1,7 +1,7 @@
 package db.manga.repository
 
 import db.manga.MangasDbConfigProvider
-import db.manga.model.{Franchises, MangaFranchises, Mangas}
+import db.manga.model.{FranchiseEntity, MangaFranchiseEntity, MangaEntity}
 import dto.Franchise
 import slick.jdbc.PostgresProfile.api._
 
@@ -12,14 +12,14 @@ import scala.concurrent.{ExecutionContext, Future}
 class FranchiseRepository @Inject()(val mangasDbConfigProvider: MangasDbConfigProvider)(implicit ec: ExecutionContext) {
 
     def findAll(): Future[Seq[Franchise]] = mangasDbConfigProvider.run {
-        Franchises.table.result
+        FranchiseEntity.table.result
     }
 
     def findAllByMangaId(mangaId: Int): Future[Seq[Franchise]] = mangasDbConfigProvider.run {
         val query = for {
-            manga <- Mangas.table if manga.id === mangaId
-            mangaFranchise <- MangaFranchises.table if mangaFranchise.mangaId === manga.id
-            franchise <- Franchises.table if franchise.id === mangaFranchise.franchiseId
+            manga <- MangaEntity.table if manga.id === mangaId
+            mangaFranchise <- MangaFranchiseEntity.table if mangaFranchise.mangaId === manga.id
+            franchise <- FranchiseEntity.table if franchise.id === mangaFranchise.franchiseId
         } yield franchise
 
         query.result

@@ -4,7 +4,7 @@ import dto.File
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery
 
-class Files(tag: Tag) extends Table[File](tag, "files") {
+class FileEntity(tag: Tag) extends Table[File](tag, "file") {
 
     def key = column[String]("key", O.PrimaryKey)
 
@@ -20,6 +20,6 @@ class Files(tag: Tag) extends Table[File](tag, "files") {
 
 }
 
-object Files {
-    val table = TableQuery[Files]
+object FileEntity {
+    val table = TableQuery[FileEntity]
 }
