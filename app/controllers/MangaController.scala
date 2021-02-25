@@ -25,4 +25,13 @@ class MangaController @Inject()(val controllerComponents: ControllerComponents,
         }
     }
 
+    def findAllBySearchParameters(maybeTitle: Option[String],
+                                  maybeFranchise: Option[String],
+                                  includedGenres: Seq[String],
+                                  excludedGenres: Seq[String]): Action[AnyContent] = Action.async { implicit request =>
+        mangaService.findAllBySearchParameters(maybeTitle, maybeFranchise, includedGenres, excludedGenres).map { mangas =>
+            Ok(Json.toJson(mangas))
+        }
+    }
+
 }

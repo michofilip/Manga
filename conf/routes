@@ -8,7 +8,7 @@ GET        /                            controllers.HomeController.index()
 
 GET        /mangas                      controllers.MangaController.findAll()
 GET        /mangas/$id<[0-9]+>          controllers.MangaController.findById(id: Int)
-GET        /mangas/search               controllers.MangaSearchController.findAllBySearchParameters(title: Option[String], franchise: Option[String], genre: Seq[String], nogenre: Seq[String])
+GET        /mangas/search               controllers.MangaController.findAllBySearchParameters(title: Option[String], franchise: Option[String], genre: Seq[String], nogenre: Seq[String])
 
 GET        /chapters/$id<[0-9]+>        controllers.ChapterController.findById(id: Int)
 
