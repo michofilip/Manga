@@ -30,6 +30,15 @@ VALUES ('KonoSuba');
 INSERT INTO manga_franchise(manga_id, franchise_id)
 VALUES (1, 1);
 
+INSERT INTO user_manga(user_id, manga_id, read, score)
+VALUES (1, 1, false, 5);
+
+INSERT INTO user_tag(user_id, tag)
+VALUES (1, 'KONOSUBA');
+
+INSERT INTO user_manga_tag(user_id, manga_id, tag)
+VALUES (1, 1, 'KONOSUBA');
+
 -- !Downs
 
 TRUNCATE TABLE manga CASCADE;
@@ -39,3 +48,5 @@ TRUNCATE TABLE genre CASCADE;
 TRUNCATE TABLE manga_genre CASCADE;
 TRUNCATE TABLE franchise CASCADE;
 TRUNCATE TABLE manga_franchise CASCADE;
+TRUNCATE TABLE user_manga CASCADE;
+TRUNCATE TABLE user_manga_tag CASCADE;

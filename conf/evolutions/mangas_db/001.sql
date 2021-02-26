@@ -57,6 +57,34 @@ CREATE TABLE IF NOT EXISTS manga_franchise
     CONSTRAINT franchise_fk FOREIGN KEY (franchise_id) REFERENCES franchise (id)
 );
 
+CREATE TABLE IF NOT EXISTS user_manga
+(
+    user_id  INT     NOT NULL,
+    manga_id INT     NOT NULL,
+    read     BOOLEAN NOT NULL,
+    score    INT,
+
+    CONSTRAINT user_manga_pk PRIMARY KEY (user_id, manga_id),
+    CONSTRAINT manga_fk FOREIGN KEY (manga_id) REFERENCES manga (id)
+);
+
+CREATE TABLE IF NOT EXISTS user_tag
+(
+    user_id INT     NOT NULL,
+    tag     VARCHAR NOT NULL,
+
+    CONSTRAINT user_folder_pk PRIMARY KEY (user_id, tag)
+);
+
+CREATE TABLE IF NOT EXISTS user_manga_tag
+(
+    user_id  INT     NOT NULL,
+    manga_id INT     NOT NULL,
+    tag      VARCHAR NOT NULL,
+
+    CONSTRAINT user_manga_fk FOREIGN KEY (user_id, manga_id) REFERENCES user_manga (user_id, manga_id),
+    CONSTRAINT tag_fk FOREIGN KEY (user_id, tag) REFERENCES user_tag (user_id, tag)
+);
 
 -- !Downs
 
@@ -67,3 +95,6 @@ DROP TABLE IF EXISTS genre CASCADE;
 DROP TABLE IF EXISTS manga_genre CASCADE;
 DROP TABLE IF EXISTS franchise CASCADE;
 DROP TABLE IF EXISTS manga_franchise CASCADE;
+DROP TABLE IF EXISTS user_manga CASCADE;
+DROP TABLE IF EXISTS user_tag CASCADE;
+DROP TABLE IF EXISTS user_manga_tag CASCADE;
