@@ -1,7 +1,7 @@
 package db.manga.repository
 
 import db.manga.MangasDbConfigProvider
-import db.manga.model.{FranchiseEntity, GenreEntity, MangaFranchiseEntity, MangaGenreEntity, MangaEntity}
+import db.manga.model.{FranchiseEntity, GenreEntity, MangaEntity}
 import dto.Manga
 import slick.jdbc.PostgresProfile.api._
 
@@ -32,24 +32,20 @@ class MangaRepository @Inject()(val mangasDbConfigProvider: MangasDbConfigProvid
     def findAllByFranchise(franchise: String): Future[Seq[Manga]] = mangasDbConfigProvider.run {
         val franchiseLike = s"%$franchise%"
 
-        val query = for {
-            manga <- MangaEntity.table
-            mangaFranchise <- MangaFranchiseEntity.table if manga.id === mangaFranchise.mangaId
-            franchise <- FranchiseEntity.table if (franchise.id === mangaFranchise.franchiseId) && (franchise.name.toLowerCase like franchiseLike)
-        } yield manga
-
-        query.distinct.result
+        FranchiseEntity.table
+            .filter(franchise => franchise.name.toLowerCase like franchiseLike)
+            .flatMap(franchise => franchise.mangas)
+            .distinct
+            .result
     }
 
     def findAllByGenres(genres: Seq[String]): Future[Seq[Manga]] = mangasDbConfigProvider.run {
         val genresLowerCase = genres.map(_.toLowerCase)
 
-        val query = for {
-            manga <- MangaEntity.table
-            mangaGenre <- MangaGenreEntity.table if manga.id === mangaGenre.mangaId
-            genre <- GenreEntity.table if genre.id === mangaGenre.genreId && genre.name.toLowerCase.inSet(genresLowerCase)
-        } yield manga
-
-        query.distinct.result
+        GenreEntity.table
+            .filter(genre => genre.name.toLowerCase.inSet(genresLowerCase))
+            .flatMap(genre => genre.mangas)
+            .distinct
+            .result
     }
 }

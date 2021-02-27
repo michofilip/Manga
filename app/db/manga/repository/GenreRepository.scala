@@ -16,18 +16,9 @@ class GenreRepository @Inject()(val mangasDbConfigProvider: MangasDbConfigProvid
     }
 
     def findAllByMangaId(mangaId: Int): Future[Seq[Genre]] = mangasDbConfigProvider.run {
-        val query = for {
-            manga <- MangaEntity.table if manga.id === mangaId
-            mangaGenre <- MangaGenreEntity.table if mangaGenre.mangaId === manga.id
-            genre <- GenreEntity.table if genre.id === mangaGenre.genreId
-        } yield genre
-
-        query.result
+        MangaEntity.table
+            .filter(manga => manga.id === mangaId)
+            .flatMap(manga => manga.genres)
+            .result
     }
-
-    //    def findByName(name: String): Future[Option[Genre]] = db.run {
-    //        Genres.table
-    //            .filter(genre => genre.name === name)
-    //            .result.headOption
-    //    }
 }
