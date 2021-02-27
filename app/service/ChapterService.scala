@@ -1,6 +1,6 @@
 package service
 
-import db.manga.repository.{ChapterRepository, PageRepository}
+import db.mangas.repository.{ChapterRepository, PageRepository}
 import dto.{Chapter, ChapterDetails}
 import utils.ExceptionUtils
 

@@ -1,4 +1,4 @@
-package db.manga
+package db.mangas
 
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import play.db.NamedDatabase

@@ -1,7 +1,7 @@
-package db.manga.repository
+package db.mangas.repository
 
-import db.manga.MangasDbConfigProvider
-import db.manga.model.ChapterEntity
+import db.mangas.MangasDbConfigProvider
+import db.mangas.model.ChapterEntity
 import dto.Page
 import slick.jdbc.PostgresProfile.api._
 

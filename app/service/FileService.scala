@@ -1,6 +1,6 @@
 package service
 
-import db.file.repository.FileRepository
+import db.files.repository.FileRepository
 import dto.File
 import utils.ExceptionUtils
 

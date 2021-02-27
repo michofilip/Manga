@@ -1,4 +1,4 @@
-package db.file
+package db.files
 
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import play.db.NamedDatabase
