@@ -16,7 +16,7 @@ class PageEntity(tag: Tag) extends Table[Page](tag, "page") {
 
     def * = (key, chapterId, pageNr, id).mapTo[Page]
 
-    def chapter = foreignKey("chapter_fk", pageNr, ChapterEntity.table)(_.id)
+    def chapterFk = foreignKey("chapter_fk", pageNr, ChapterEntity.table)(_.id)
 
 }
 
