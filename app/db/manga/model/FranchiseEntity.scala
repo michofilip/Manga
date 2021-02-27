@@ -17,7 +17,3 @@ class FranchiseEntity(tag: Tag) extends Table[Franchise](tag, "franchise") {
 object FranchiseEntity {
     val table = TableQuery[FranchiseEntity]
 }
-
-
-
-

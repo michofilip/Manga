@@ -17,5 +17,3 @@ class GenreEntity(tag: Tag) extends Table[Genre](tag, "genre") {
 object GenreEntity {
     val table = TableQuery[GenreEntity]
 }
-
-

@@ -23,5 +23,3 @@ class PageEntity(tag: Tag) extends Table[Page](tag, "page") {
 object PageEntity {
     val table = TableQuery[PageEntity]
 }
-
-

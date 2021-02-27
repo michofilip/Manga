@@ -20,7 +20,3 @@ class MangaGenreEntity(tag: Tag) extends Table[(Int, Int)](tag, "manga_genre") {
 object MangaGenreEntity {
     val table = TableQuery[MangaGenreEntity]
 }
-
-
-
-
