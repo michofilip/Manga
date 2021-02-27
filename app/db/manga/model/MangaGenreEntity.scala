@@ -11,16 +11,16 @@ class MangaGenreEntity(tag: Tag) extends Table[(Int, Int)](tag, "manga_genre") {
 
     def * = (mangaId, genreId)
 
-    def manga = foreignKey("manga_fk", mangaId, MangaEntity.table)(_.id)
+    def mangaFk = foreignKey("manga_fk", mangaId, MangaEntity.table)(_.id)
 
-    def genre = foreignKey("genre_fk", genreId, GenreEntity.table)(_.id)
+    def manga = mangaFk.filter(_.id === mangaId)
+
+    def genreFk = foreignKey("genre_fk", genreId, GenreEntity.table)(_.id)
+
+    def genre = genreFk.filter(_.id === genreId)
 
 }
 
 object MangaGenreEntity {
     val table = TableQuery[MangaGenreEntity]
 }
-
-
-
-

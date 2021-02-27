@@ -1,7 +1,7 @@
 package db.manga.repository
 
 import db.manga.MangasDbConfigProvider
-import db.manga.model.{FranchiseEntity, MangaFranchiseEntity, MangaEntity}
+import db.manga.model.{FranchiseEntity, MangaEntity}
 import dto.Franchise
 import slick.jdbc.PostgresProfile.api._
 
@@ -16,18 +16,10 @@ class FranchiseRepository @Inject()(val mangasDbConfigProvider: MangasDbConfigPr
     }
 
     def findAllByMangaId(mangaId: Int): Future[Seq[Franchise]] = mangasDbConfigProvider.run {
-        val query = for {
-            manga <- MangaEntity.table if manga.id === mangaId
-            mangaFranchise <- MangaFranchiseEntity.table if mangaFranchise.mangaId === manga.id
-            franchise <- FranchiseEntity.table if franchise.id === mangaFranchise.franchiseId
-        } yield franchise
-
-        query.result
+        MangaEntity.table
+            .filter(manga => manga.id === mangaId)
+            .flatMap(manga => manga.franchises)
+            .result
     }
 
-    //    def findByName(name: String): Future[Option[Genre]] = db.run {
-    //        Genres.table
-    //            .filter(genre => genre.name === name)
-    //            .result.headOption
-    //    }
 }

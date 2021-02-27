@@ -18,7 +18,11 @@ class ChapterEntity(tag: Tag) extends Table[Chapter](tag, "chapter") {
 
     def * = (number, subNumber, title, mangaId, id).mapTo[Chapter]
 
-    def manga = foreignKey("manga_fk", mangaId, MangaEntity.table)(_.id)
+    def mangaFk = foreignKey("manga_fk", mangaId, MangaEntity.table)(_.id)
+
+    def manga = mangaFk.filter(_.id === mangaId)
+
+    def pages = PageEntity.table.filter(_.chapterId === id)
 
 }
 
