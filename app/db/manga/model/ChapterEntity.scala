@@ -22,6 +22,8 @@ class ChapterEntity(tag: Tag) extends Table[Chapter](tag, "chapter") {
 
     def manga = mangaFk.filter(_.id === mangaId)
 
+    def pages = PageEntity.table.filter(_.chapterId === id)
+
 }
 
 object ChapterEntity {

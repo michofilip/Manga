@@ -12,6 +12,8 @@ class FranchiseEntity(tag: Tag) extends Table[Franchise](tag, "franchise") {
 
     def * = (name, id).mapTo[Franchise]
 
+    def mangas = MangaGenreEntity.table.filter(_.genreId === id).flatMap(_.manga)
+
 }
 
 object FranchiseEntity {

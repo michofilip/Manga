@@ -13,7 +13,11 @@ class MangaGenreEntity(tag: Tag) extends Table[(Int, Int)](tag, "manga_genre") {
 
     def mangaFk = foreignKey("manga_fk", mangaId, MangaEntity.table)(_.id)
 
+    def manga = mangaFk.filter(_.id === mangaId)
+
     def genreFk = foreignKey("genre_fk", genreId, GenreEntity.table)(_.id)
+
+    def genre = genreFk.filter(_.id === genreId)
 
 }
 

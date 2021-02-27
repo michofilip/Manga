@@ -12,6 +12,12 @@ class MangaEntity(tag: Tag) extends Table[Manga](tag, "manga") {
 
     def * = (title, id).mapTo[Manga]
 
+    def chapters = ChapterEntity.table.filter(_.mangaId === id)
+
+    def genres = MangaGenreEntity.table.filter(_.mangaId === id).flatMap(_.genre)
+
+    def franchises = MangaFranchiseEntity.table.filter(_.mangaId === id).flatMap(_.franchise)
+
 }
 
 object MangaEntity {

@@ -13,7 +13,11 @@ class MangaFranchiseEntity(tag: Tag) extends Table[(Int, Int)](tag, "manga_franc
 
     def mangaFk = foreignKey("manga_fk", mangaId, MangaEntity.table)(_.id)
 
+    def manga = mangaFk.filter(_.id === mangaId)
+
     def franchiseFk = foreignKey("franchise_fk", franchiseId, FranchiseEntity.table)(_.id)
+
+    def franchise = franchiseFk.filter(_.id === franchiseId)
 
 }
 
