@@ -2,6 +2,7 @@ package service
 
 import db.users.repository.UserRepository
 import dto.User
+import form.UserForm
 import utils.ExceptionUtils
 
 import javax.inject.{Inject, Singleton}
@@ -25,6 +26,26 @@ class UserService @Inject()(val userRepository: UserRepository)
                     Right {
                         user
                     }
+                }
+        }
+    }
+
+    def create(userForm: UserForm): Future[User] = {
+        val user = User.from(userForm)
+
+        userRepository.create(user)
+    }
+
+    def update(userForm: UserForm): Future[Either[Throwable, User]] = {
+        val user = User.from(userForm)
+
+        userRepository.findById(user.id).flatMap {
+            case None =>
+                ExceptionUtils.noSuchElementException(s"User id ${user.id} not found!")
+
+            case Some(_) =>
+                userRepository.update(user).flatMap { _ =>
+                    findById(user.id)
                 }
         }
     }

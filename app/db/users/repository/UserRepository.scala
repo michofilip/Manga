@@ -20,4 +20,29 @@ class UserRepository @Inject()(val usersDbConfigProvider: UsersDbConfigProvider)
             .filter(user => user.id === id)
             .result.headOption
     }
+
+    def create(user: User): Future[User] = usersDbConfigProvider.run {
+        (UserEntity.table returning UserEntity.table.map(user => user.id) into ((user, id) => user.copy(id = id))) += user
+    }
+
+    def update(user: User): Future[Int] = {
+        val id = user.id
+
+        val query = UserEntity.table
+            .filter(_.id === id)
+            .update(user)
+
+        println(user)
+        println(query.statements.head)
+
+        usersDbConfigProvider.run {
+            query
+        }
+    }
+
+    def delete(id: Int): Future[Int] = usersDbConfigProvider.run {
+        UserEntity.table
+            .filter(user => user.id === id)
+            .delete
+    }
 }
