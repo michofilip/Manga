@@ -39,14 +39,15 @@ class UserService @Inject()(val userRepository: UserRepository)
     def update(userForm: UserForm): Future[Either[Throwable, User]] = {
         val user = User.from(userForm)
 
-        userRepository.findById(user.id).flatMap {
-            case None =>
+        userRepository.exists(user.id).flatMap {
+            case true =>
                 ExceptionUtils.noSuchElementException(s"User id ${user.id} not found!")
 
-            case Some(_) =>
-                userRepository.update(user).flatMap { _ =>
-                    findById(user.id)
-                }
+            case false =>
+                for {
+                    _ <- userRepository.update(user)
+                    user <- findById(user.id)
+                } yield user
         }
     }
 
