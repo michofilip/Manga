@@ -6,4 +6,6 @@ case class Tag(accountId: Int, tag: String, id: Int = 0)
 
 object Tag {
     implicit val writes: OWrites[Tag] = Json.writes[Tag]
+
+    def tupled = (Tag.apply _).tupled
 }

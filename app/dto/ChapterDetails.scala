@@ -7,4 +7,3 @@ case class ChapterDetails(chapter: Chapter, previousChapter: Option[Chapter], ne
 object ChapterDetails {
     implicit val writes: OWrites[ChapterDetails] = Json.writes[ChapterDetails]
 }
-
