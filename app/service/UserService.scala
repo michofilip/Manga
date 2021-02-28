@@ -51,4 +51,14 @@ class UserService @Inject()(val userRepository: UserRepository)
         }
     }
 
+    def delete(userId: Int): Future[Either[Throwable, Unit]] = {
+        userRepository.exists(userId).flatMap {
+            case false =>
+                ExceptionUtils.noSuchElementException(s"User id ${userId} not found!")
+
+            case true =>
+                userRepository.delete(userId).map(_ => Right())
+        }
+    }
+
 }
