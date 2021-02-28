@@ -1,6 +1,6 @@
 package service
 
-import db.manga.repository.GenreRepository
+import db.mangas.repository.GenreRepository
 import dto.Genre
 
 import javax.inject.{Inject, Singleton}

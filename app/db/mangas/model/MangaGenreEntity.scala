@@ -1,4 +1,4 @@
-package db.manga.model
+package db.mangas.model
 
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery

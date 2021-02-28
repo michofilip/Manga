@@ -1,4 +1,4 @@
-package db.manga.model
+package db.mangas.model
 
 import dto.Manga
 import slick.jdbc.PostgresProfile.api._

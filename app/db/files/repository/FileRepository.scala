@@ -1,7 +1,7 @@
-package db.file.repository
+package db.files.repository
 
-import db.file.FilesDbConfigProvider
-import db.file.model.FileEntity
+import db.files.FilesDbConfigProvider
+import db.files.model.FileEntity
 import dto.File
 import slick.jdbc.PostgresProfile.api._
 

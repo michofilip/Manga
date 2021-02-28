@@ -1,4 +1,4 @@
-package db.file.model
+package db.files.model
 
 import dto.File
 import slick.jdbc.PostgresProfile.api._
