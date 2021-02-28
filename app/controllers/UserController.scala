@@ -27,33 +27,31 @@ class UserController @Inject()(val controllerComponents: ControllerComponents,
     }
 
     def create(): Action[AnyContent] = Action.async { implicit request =>
-        request.body.asJson
-            .flatMap(json => Json.fromJson[UserForm](json).asOpt) match {
-            case Some(userForm) =>
-                userService.create(userForm).map { user =>
-                    Ok(Json.toJson(user))
-                }
+        request.body.asJson.flatMap { json =>
+            Json.fromJson[UserForm](json).asOpt
+        } match {
+            case Some(userForm) => userService.create(userForm).map { user =>
+                Ok(Json.toJson(user))
+            }
 
-            case None =>
-                Future {
-                    BadRequest
-                }
+            case None => Future {
+                BadRequest
+            }
         }
     }
 
     def update(): Action[AnyContent] = Action.async { implicit request =>
-        request.body.asJson
-            .flatMap(json => Json.fromJson[UserForm](json).asOpt) match {
-            case Some(userForm) =>
-                userService.update(userForm).map {
-                    case Right(user) => Ok(Json.toJson(user))
-                    case Left(e) => NotFound(e.getMessage)
-                }
+        request.body.asJson.flatMap { json =>
+            Json.fromJson[UserForm](json).asOpt
+        } match {
+            case Some(userForm) => userService.update(userForm).map {
+                case Right(user) => Ok(Json.toJson(user))
+                case Left(e) => NotFound(e.getMessage)
+            }
 
-            case None =>
-                Future {
-                    BadRequest
-                }
+            case None => Future {
+                BadRequest
+            }
         }
     }
 
