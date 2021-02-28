@@ -15,5 +15,9 @@ GET        /chapters/$id<[0-9]+>        controllers.ChapterController.findById(i
 GET        /genres                      controllers.GenreController.findAll()
 
 GET        /files/:key                  controllers.FileController.findByKey(key: String)
+
+GET        /users                       controllers.UserController.findAll()
+GET        /users/$id<[0-9]+>           controllers.UserController.findById(id: Int)
+
 # Map static resources from the /public folder to the /assets URL path
 GET        /assets/*file                controllers.Assets.versioned(path="/public", file: Asset)
