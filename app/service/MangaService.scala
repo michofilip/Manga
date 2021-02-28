@@ -6,6 +6,7 @@ import utils.ExceptionUtils
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Success, Try}
 
 @Singleton
 class MangaService @Inject()(val mangaRepository: MangaRepository,
@@ -18,7 +19,7 @@ class MangaService @Inject()(val mangaRepository: MangaRepository,
         mangaRepository.findAll()
     }
 
-    def findById(mangaId: Int): Future[Either[Throwable, MangaDetails]] = {
+    def findById(mangaId: Int): Future[Try[MangaDetails]] = {
         mangaRepository.findById(mangaId).flatMap {
             case None =>
                 ExceptionUtils.noSuchElementException(s"Manga id $mangaId not found!")
@@ -31,7 +32,7 @@ class MangaService @Inject()(val mangaRepository: MangaRepository,
                 } yield (chapters, franchises, genres)
 
                 result.map { case (chapters, franchises, genres) =>
-                    Right {
+                    Success {
                         MangaDetails(
                             manga = manga,
                             franchises = franchises,

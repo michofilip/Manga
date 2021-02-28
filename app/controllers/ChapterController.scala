@@ -6,6 +6,7 @@ import service.ChapterService
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
+import scala.util.{Failure, Success}
 
 @Singleton
 class ChapterController @Inject()(val controllerComponents: ControllerComponents,
@@ -14,8 +15,8 @@ class ChapterController @Inject()(val controllerComponents: ControllerComponents
 
     def findById(chapterId: Int): Action[AnyContent] = Action.async { implicit request =>
         chapterService.findById(chapterId).map {
-            case Right(chapterDetails) => Ok(Json.toJson(chapterDetails))
-            case Left(e) => NotFound(e.getMessage)
+            case Success(chapterDetails) => Ok(Json.toJson(chapterDetails))
+            case Failure(e) => NotFound(e.getMessage)
         }
     }
 

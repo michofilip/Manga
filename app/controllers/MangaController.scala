@@ -6,6 +6,7 @@ import service.MangaService
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
+import scala.util.{Failure, Success}
 
 @Singleton
 class MangaController @Inject()(val controllerComponents: ControllerComponents,
@@ -20,8 +21,8 @@ class MangaController @Inject()(val controllerComponents: ControllerComponents,
 
     def findById(mangaId: Int): Action[AnyContent] = Action.async { implicit request =>
         mangaService.findById(mangaId).map {
-            case Right(mangaDetails) => Ok(Json.toJson(mangaDetails))
-            case Left(e) => NotFound(e.getMessage)
+            case Success(mangaDetails) => Ok(Json.toJson(mangaDetails))
+            case Failure(e) => NotFound(e.getMessage)
         }
     }
 

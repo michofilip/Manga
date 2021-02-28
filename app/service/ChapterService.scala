@@ -6,13 +6,14 @@ import utils.ExceptionUtils
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Success, Try}
 
 @Singleton
 class ChapterService @Inject()(val chapterRepository: ChapterRepository,
                                val pageRepository: PageRepository)
                               (implicit ec: ExecutionContext) {
 
-    def findById(chapterId: Int): Future[Either[Throwable, ChapterDetails]] = {
+    def findById(chapterId: Int): Future[Try[ChapterDetails]] = {
         def extractPreviousAndNextChapter(chapterId: Int, chapters: Seq[Chapter]): (Option[Chapter], Option[Chapter]) = {
             val maybePreviousChapter = chapters
                 .takeWhile(chapter => chapter.id != chapterId)
@@ -39,7 +40,7 @@ class ChapterService @Inject()(val chapterRepository: ChapterRepository,
                 result.map { case (chapters, pages) =>
                     val (maybePreviousChapter, maybeNextChapter) = extractPreviousAndNextChapter(chapterId, chapters)
 
-                    Right {
+                    Success {
                         ChapterDetails(
                             chapter = chapter,
                             previousChapter = maybePreviousChapter,

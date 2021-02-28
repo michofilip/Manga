@@ -7,6 +7,7 @@ import service.UserService
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
 @Singleton
 class UserController @Inject()(val controllerComponents: ControllerComponents,
@@ -21,8 +22,8 @@ class UserController @Inject()(val controllerComponents: ControllerComponents,
 
     def findById(userId: Int): Action[AnyContent] = Action.async { implicit request =>
         userService.findById(userId).map {
-            case Right(user) => Ok(Json.toJson(user))
-            case Left(e) => NotFound(e.getMessage)
+            case Success(user) => Ok(Json.toJson(user))
+            case Failure(e) => NotFound(e.getMessage)
         }
     }
 
@@ -45,8 +46,8 @@ class UserController @Inject()(val controllerComponents: ControllerComponents,
             Json.fromJson[UserForm](json).asOpt
         } match {
             case Some(userForm) => userService.update(userForm).map {
-                case Right(user) => Ok(Json.toJson(user))
-                case Left(e) => NotFound(e.getMessage)
+                case Success(user) => Ok(Json.toJson(user))
+                case Failure(e) => NotFound(e.getMessage)
             }
 
             case None => Future {
@@ -57,8 +58,8 @@ class UserController @Inject()(val controllerComponents: ControllerComponents,
 
     def delete(userId: Int): Action[AnyContent] = Action.async { implicit request =>
         userService.delete(userId).map {
-            case Right(_) => Ok
-            case Left(e) => NotFound(e.getMessage)
+            case Success(_) => Ok
+            case Failure(e) => NotFound(e.getMessage)
         }
     }
 
