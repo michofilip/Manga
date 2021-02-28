@@ -9,6 +9,7 @@ import service.FileService
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
+import scala.util.{Failure, Success}
 
 @Singleton
 class FileController @Inject()(val controllerComponents: ControllerComponents,
@@ -17,7 +18,7 @@ class FileController @Inject()(val controllerComponents: ControllerComponents,
 
     def findByKey(key: String): Action[AnyContent] = Action.async { implicit request =>
         fileService.findByKey(key).map {
-            case Right(file) =>
+            case Success(file) =>
                 val byteString: ByteString = ByteString(file.content)
                 val source: Source[ByteString, NotUsed] = Source.single(byteString)
                 val contentLength = Some(file.contentLength)
@@ -30,7 +31,7 @@ class FileController @Inject()(val controllerComponents: ControllerComponents,
                     fileName = fileName
                 )
 
-            case Left(e) =>
+            case Failure(e) =>
                 NotFound(e.getMessage)
         }
     }

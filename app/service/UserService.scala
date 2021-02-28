@@ -7,6 +7,7 @@ import utils.ExceptionUtils
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Success, Try}
 
 @Singleton
 class UserService @Inject()(val userRepository: UserRepository)
@@ -16,14 +17,14 @@ class UserService @Inject()(val userRepository: UserRepository)
         userRepository.findAll()
     }
 
-    def findById(userId: Int): Future[Either[Throwable, User]] = {
+    def findById(userId: Int): Future[Try[User]] = {
         userRepository.findById(userId).flatMap {
             case None =>
                 ExceptionUtils.noSuchElementException(s"User id $userId not found!")
 
             case Some(user) =>
                 Future.successful {
-                    Right {
+                    Success {
                         user
                     }
                 }
@@ -36,7 +37,7 @@ class UserService @Inject()(val userRepository: UserRepository)
         userRepository.create(user)
     }
 
-    def update(userForm: UserForm): Future[Either[Throwable, User]] = {
+    def update(userForm: UserForm): Future[Try[User]] = {
         val user = User.from(userForm)
 
         userRepository.exists(user.id).flatMap {
@@ -51,13 +52,15 @@ class UserService @Inject()(val userRepository: UserRepository)
         }
     }
 
-    def delete(userId: Int): Future[Either[Throwable, Unit]] = {
+    def delete(userId: Int): Future[Try[Unit]] = {
         userRepository.exists(userId).flatMap {
             case false =>
-                ExceptionUtils.noSuchElementException(s"User id ${userId} not found!")
+                ExceptionUtils.noSuchElementException(s"User id $userId not found!")
 
             case true =>
-                userRepository.delete(userId).map(_ => Right())
+                userRepository.delete(userId).map { _ =>
+                    Success()
+                }
         }
     }
 

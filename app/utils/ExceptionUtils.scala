@@ -1,11 +1,12 @@
 package utils
 
 import scala.concurrent.Future
+import scala.util.Failure
 
 object ExceptionUtils {
-    def noSuchElementException(message: String): Future[Left[NoSuchElementException, Nothing]] = {
+    def noSuchElementException(message: String): Future[Failure[Nothing]] = {
         Future.successful {
-            Left {
+            Failure {
                 new NoSuchElementException(message)
             }
         }
