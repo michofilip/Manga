@@ -8,5 +8,4 @@ object Manga {
     implicit val writes: OWrites[Manga] = Json.writes[Manga]
 
     def tupled = (Manga.apply _).tupled
-
 }

@@ -8,5 +8,4 @@ object Chapter {
     implicit val writes: OWrites[Chapter] = Json.writes[Chapter]
 
     def tupled = (Chapter.apply _).tupled
-
 }

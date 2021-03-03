@@ -9,5 +9,3 @@ object Genre {
 
     def tupled = (Genre.apply _).tupled
 }
-
-

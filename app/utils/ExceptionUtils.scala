@@ -4,11 +4,16 @@ import scala.concurrent.Future
 import scala.util.Failure
 
 object ExceptionUtils {
-    def noSuchElementException(message: String): Future[Failure[Nothing]] = {
+
+    def futureFailure(throwable: Throwable): Future[Failure[Nothing]] = {
         Future.successful {
             Failure {
-                new NoSuchElementException(message)
+                throwable
             }
         }
+    }
+
+    def noSuchElementException(message: String): Future[Failure[Nothing]] = {
+        futureFailure(new NoSuchElementException(message))
     }
 }

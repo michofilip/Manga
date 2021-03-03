@@ -9,6 +9,3 @@ object Franchise {
 
     def tupled = (Franchise.apply _).tupled
 }
-
-
-
