@@ -79,8 +79,12 @@ CREATE UNIQUE INDEX account_tag_idx ON tag (account_id, tag);
 
 CREATE TABLE IF NOT EXISTS account_manga
 (
-    account_id INT NOT NULL,
-    manga_id   INT NOT NULL,
+    account_id       INT     NOT NULL,
+    manga_id         INT     NOT NULL,
+    is_in_collection BOOLEAN NOT NULL,
+    is_read          BOOLEAN NOT NULL,
+    is_favorite      BOOLEAN NOT NULL,
+    score            INT,
 
     CONSTRAINT manga_fk FOREIGN KEY (manga_id) REFERENCES manga (id),
     CONSTRAINT account_fk FOREIGN KEY (account_id) REFERENCES account (id)

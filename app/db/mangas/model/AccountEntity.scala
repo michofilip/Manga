@@ -17,7 +17,7 @@ class AccountEntity(tag: Tag) extends Table[Account](tag, "account") {
 
     def tags = TagEntity.table.filter(_.accountId === id)
 
-    def mangas = AccountMangaEntity.table.filter(_.accountId === id).flatMap(_.manga)
+    def accountMangas = AccountMangaEntity.table.filter(_.accountId === id)
 
 }
 
