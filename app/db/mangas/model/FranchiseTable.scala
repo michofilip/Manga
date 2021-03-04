@@ -4,7 +4,7 @@ import db.mangas.model.FranchiseTable.FranchiseEntity
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery
 
-class FranchiseTable(tag: Tag) extends Table[FranchiseEntity](tag, "franchise") {
+class FranchiseTable(t: Tag) extends Table[FranchiseEntity](t, "franchise") {
 
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 

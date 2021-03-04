@@ -3,7 +3,7 @@ package db.mangas.model
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery
 
-class MangaGenreTable(tag: Tag) extends Table[(Int, Int)](tag, "manga_genre") {
+class MangaGenreTable(t: Tag) extends Table[(Int, Int)](t, "manga_genre") {
 
     def mangaId = column[Int]("manga_id")
 

@@ -4,7 +4,7 @@ import db.mangas.model.MangaTable.MangaEntity
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery
 
-class MangaTable(tag: Tag) extends Table[MangaEntity](tag, "manga") {
+class MangaTable(t: Tag) extends Table[MangaEntity](t, "manga") {
 
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 

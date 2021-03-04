@@ -4,7 +4,7 @@ import db.mangas.model.PageTable.PageEntity
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery
 
-class PageTable(tag: Tag) extends Table[PageEntity](tag, "page") {
+class PageTable(t: Tag) extends Table[PageEntity](t, "page") {
 
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 

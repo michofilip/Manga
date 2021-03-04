@@ -3,7 +3,7 @@ package db.mangas.model
 import db.mangas.model.AccountTable.AccountEntity
 import slick.jdbc.PostgresProfile.api._
 
-class AccountTable(tag: Tag) extends Table[AccountEntity](tag, "account") {
+class AccountTable(t: Tag) extends Table[AccountEntity](t, "account") {
 
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 

@@ -4,7 +4,7 @@ import db.mangas.model.GenreTable.GenreEntity
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery
 
-class GenreTable(tag: Tag) extends Table[GenreEntity](tag, "genre") {
+class GenreTable(t: Tag) extends Table[GenreEntity](t, "genre") {
 
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 

@@ -4,7 +4,7 @@ import db.mangas.model.ChapterTable.ChapterEntity
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery
 
-class ChapterTable(tag: Tag) extends Table[ChapterEntity](tag, "chapter") {
+class ChapterTable(t: Tag) extends Table[ChapterEntity](t, "chapter") {
 
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 
