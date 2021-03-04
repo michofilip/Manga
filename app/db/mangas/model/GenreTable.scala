@@ -12,7 +12,7 @@ class GenreTable(tag: Tag) extends Table[GenreEntity](tag, "genre") {
 
     def * = (name, id).mapTo[GenreEntity]
 
-    def mangas = MangaGenreEntity.table.filter(_.genreId === id).flatMap(_.manga)
+    def mangas = MangaGenreTable.all.filter(_.genreId === id).flatMap(_.manga)
 
 }
 
