@@ -1,8 +1,9 @@
 package db.mangas.model
 
+import db.mangas.model.TagTable.TagEntity
 import slick.jdbc.PostgresProfile.api._
 
-class TagEntity(_tag: Tag) extends Table[dto.Tag](_tag, "tag") {
+class TagTable(t: Tag) extends Table[TagEntity](t, "tag") {
 
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 
@@ -10,7 +11,7 @@ class TagEntity(_tag: Tag) extends Table[dto.Tag](_tag, "tag") {
 
     def tag = column[String]("tag")
 
-    def * = (accountId, tag, id).mapTo[dto.Tag]
+    def * = (accountId, tag, id).mapTo[TagEntity]
 
     def accountTagIdx = index("account_tag_idx", (accountId, tag), unique = true)
 
@@ -20,6 +21,9 @@ class TagEntity(_tag: Tag) extends Table[dto.Tag](_tag, "tag") {
 
 }
 
-object TagEntity {
-    val table = TableQuery[TagEntity]
+object TagTable {
+    val all = TableQuery[TagTable]
+
+    case class TagEntity(accountId: Int, tag: String, id: Int = 0)
+
 }

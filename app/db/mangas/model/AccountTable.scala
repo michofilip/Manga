@@ -15,7 +15,7 @@ class AccountTable(tag: Tag) extends Table[AccountEntity](tag, "account") {
 
     def accountUserIdx = index("account_user_idx", (id, userId), unique = true)
 
-    def tags = TagEntity.table.filter(_.accountId === id)
+    def tags = TagTable.all.filter(_.accountId === id)
 
     def accountMangas = AccountMangaTable.all.filter(_.accountId === id)
 
