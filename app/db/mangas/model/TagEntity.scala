@@ -16,7 +16,7 @@ class TagEntity(_tag: Tag) extends Table[dto.Tag](_tag, "tag") {
 
     def accountFk = foreignKey("account_fk", accountId, AccountTable.all)(_.id)
 
-    def mangas = MangaTagEntity.table.filter(_.tagId === id).flatMap(_.manga)
+    def mangas = MangaTagTable.all.filter(_.tagId === id).flatMap(_.manga)
 
 }
 

@@ -2,7 +2,7 @@ package db.mangas.model
 
 import slick.jdbc.PostgresProfile.api._
 
-class MangaTagEntity(_tag: Tag) extends Table[(Int, Int)](_tag, "manga_tag") {
+class MangaTagTable(t: Tag) extends Table[(Int, Int)](t, "manga_tag") {
 
     def mangaId = column[Int]("manga_id")
 
@@ -20,6 +20,6 @@ class MangaTagEntity(_tag: Tag) extends Table[(Int, Int)](_tag, "manga_tag") {
 
 }
 
-object MangaTagEntity {
-    val table = TableQuery[MangaTagEntity]
+object MangaTagTable {
+    val all = TableQuery[MangaTagTable]
 }
