@@ -20,7 +20,7 @@ class FileService @Inject()(val fileRepository: FileRepository)
             case Some(file) =>
                 Future.successful {
                     Success {
-                        file
+                        File.fromEntity(file)
                     }
                 }
         }
