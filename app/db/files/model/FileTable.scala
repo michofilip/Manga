@@ -4,7 +4,7 @@ import db.files.model.FileTable.FileEntity
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery
 
-class FileTable(tag: Tag) extends Table[FileEntity](tag, "file") {
+class FileTable(t: Tag) extends Table[FileEntity](t, "file") {
 
     def key = column[String]("key", O.PrimaryKey)
 

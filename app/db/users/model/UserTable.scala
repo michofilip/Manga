@@ -4,7 +4,7 @@ import db.users.model.UserTable.UserEntity
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery
 
-class UserTable(tag: Tag) extends Table[UserEntity](tag, "user") {
+class UserTable(t: Tag) extends Table[UserEntity](t, "user") {
 
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 
