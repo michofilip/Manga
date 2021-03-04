@@ -10,11 +10,12 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Success, Try}
 
 @Singleton
-class UserService @Inject()(val userRepository: UserRepository)
+class UserService @Inject()(userRepository: UserRepository)
                            (implicit ec: ExecutionContext) {
 
     def findAll(): Future[Seq[User]] = {
         userRepository.findAll()
+            .map(User.fromEntities)
     }
 
     def findById(userId: Int): Future[Try[User]] = {
@@ -25,7 +26,7 @@ class UserService @Inject()(val userRepository: UserRepository)
             case Some(user) =>
                 Future.successful {
                     Success {
-                        user
+                        User.fromEntity(user)
                     }
                 }
         }
@@ -34,7 +35,8 @@ class UserService @Inject()(val userRepository: UserRepository)
     def create(userForm: UserForm): Future[User] = {
         val user = User.from(userForm)
 
-        userRepository.create(user)
+        userRepository.create(User.toEntity(user))
+            .map(User.fromEntity)
     }
 
     def update(userForm: UserForm): Future[Try[User]] = {
@@ -46,7 +48,7 @@ class UserService @Inject()(val userRepository: UserRepository)
 
             case false =>
                 for {
-                    _ <- userRepository.update(user)
+                    _ <- userRepository.update(User.toEntity(user))
                     user <- findById(user.id)
                 } yield user
         }

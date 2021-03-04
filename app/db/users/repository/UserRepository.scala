@@ -1,47 +1,47 @@
 package db.users.repository
 
 import db.users.UsersDbConfigProvider
-import db.users.model.UserEntity
-import dto.User
+import db.users.model.UserTable
+import db.users.model.UserTable.UserEntity
 import slick.jdbc.PostgresProfile.api._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class UserRepository @Inject()(val usersDbConfigProvider: UsersDbConfigProvider)(implicit ec: ExecutionContext) {
+class UserRepository @Inject()(usersDbConfigProvider: UsersDbConfigProvider)(implicit ec: ExecutionContext) {
 
-    def findAll(): Future[Seq[User]] = usersDbConfigProvider.run {
-        UserEntity.table.result
+    def findAll(): Future[Seq[UserEntity]] = usersDbConfigProvider.run {
+        UserTable.all.result
     }
 
-    def findById(id: Int): Future[Option[User]] = usersDbConfigProvider.run {
-        UserEntity.table
+    def findById(id: Int): Future[Option[UserEntity]] = usersDbConfigProvider.run {
+        UserTable.all
             .filter(user => user.id === id)
             .result.headOption
     }
 
     def exists(id: Int): Future[Boolean] = usersDbConfigProvider.run {
-        UserEntity.table
+        UserTable.all
             .filter(user => user.id === id)
             .exists
             .result
     }
 
-    def create(user: User): Future[User] = usersDbConfigProvider.run {
-        (UserEntity.table returning UserEntity.table.map(user => user.id) into ((user, id) => user.copy(id = id))) += user
+    def create(user: UserEntity): Future[UserEntity] = usersDbConfigProvider.run {
+        (UserTable.all returning UserTable.all.map(user => user.id) into ((user, id) => user.copy(id = id))) += user
     }
 
-    def update(user: User): Future[Int] = usersDbConfigProvider.run {
+    def update(user: UserEntity): Future[Int] = usersDbConfigProvider.run {
         val id = user.id
 
-        UserEntity.table
+        UserTable.all
             .filter(user => user.id === id)
             .update(user)
     }
 
     def delete(id: Int): Future[Int] = usersDbConfigProvider.run {
-        UserEntity.table
+        UserTable.all
             .filter(user => user.id === id)
             .delete
     }
