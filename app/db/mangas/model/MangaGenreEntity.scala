@@ -15,7 +15,7 @@ class MangaGenreEntity(tag: Tag) extends Table[(Int, Int)](tag, "manga_genre") {
 
     def manga = mangaFk.filter(_.id === mangaId)
 
-    def genreFk = foreignKey("genre_fk", genreId, GenreEntity.table)(_.id)
+    def genreFk = foreignKey("genre_fk", genreId, GenreTable.all)(_.id)
 
     def genre = genreFk.filter(_.id === genreId)
 
