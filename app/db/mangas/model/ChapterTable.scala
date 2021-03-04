@@ -1,10 +1,10 @@
 package db.mangas.model
 
-import dto.Chapter
+import db.mangas.model.ChapterTable.ChapterEntity
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery
 
-class ChapterEntity(tag: Tag) extends Table[Chapter](tag, "chapter") {
+class ChapterTable(tag: Tag) extends Table[ChapterEntity](tag, "chapter") {
 
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 
@@ -16,7 +16,7 @@ class ChapterEntity(tag: Tag) extends Table[Chapter](tag, "chapter") {
 
     def mangaId = column[Int]("manga_id")
 
-    def * = (number, subNumber, title, mangaId, id).mapTo[Chapter]
+    def * = (number, subNumber, title, mangaId, id).mapTo[ChapterEntity]
 
     def mangaFk = foreignKey("manga_fk", mangaId, MangaTable.all)(_.id)
 
@@ -26,6 +26,9 @@ class ChapterEntity(tag: Tag) extends Table[Chapter](tag, "chapter") {
 
 }
 
-object ChapterEntity {
-    val table = TableQuery[ChapterEntity]
+object ChapterTable {
+    val all = TableQuery[ChapterTable]
+
+    case class ChapterEntity(number: Int, subNumber: Int, title: String, mangaId: Int, id: Int = 0)
+
 }

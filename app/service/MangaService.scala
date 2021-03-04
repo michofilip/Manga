@@ -1,6 +1,6 @@
 package service
 
-import db.mangas.repository.{ChapterRepository, FranchiseRepository, GenreRepository, MangaRepository}
+import db.mangas.repository.{FranchiseRepository, GenreRepository, MangaRepository}
 import dto.{Manga, MangaDetails}
 import utils.ExceptionUtils
 
@@ -10,7 +10,7 @@ import scala.util.{Success, Try}
 
 @Singleton
 class MangaService @Inject()(mangaRepository: MangaRepository,
-                             chapterRepository: ChapterRepository,
+                             chapterService: ChapterService,
                              genreRepository: GenreRepository,
                              franchiseRepository: FranchiseRepository)
                             (implicit ec: ExecutionContext) {
@@ -27,7 +27,7 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
 
             case Some(manga) =>
                 val result = for {
-                    chapters <- chapterRepository.findAllByMangaId(mangaId)
+                    chapters <- chapterService.findAllByMangaId(mangaId)
                     franchises <- franchiseRepository.findAllByMangaId(mangaId)
                     genres <- genreRepository.findAllByMangaId(mangaId)
                 } yield (chapters, franchises, genres)

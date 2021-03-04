@@ -1,7 +1,7 @@
 package db.mangas.repository
 
 import db.mangas.MangasDbConfigProvider
-import db.mangas.model.ChapterEntity
+import db.mangas.model.ChapterTable
 import dto.Page
 import slick.jdbc.PostgresProfile.api._
 
@@ -12,7 +12,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PageRepository @Inject()(val mangasDbConfigProvider: MangasDbConfigProvider)(implicit ec: ExecutionContext) {
 
     def findByChapterId(chapterId: Int): Future[Seq[Page]] = mangasDbConfigProvider.run {
-        ChapterEntity.table
+        ChapterTable.all
             .filter(chapter => chapter.id === chapterId)
             .flatMap(chapter => chapter.pages)
             .sortBy(page => page.pageNr)
