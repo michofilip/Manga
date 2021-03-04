@@ -18,7 +18,7 @@ class ChapterRepository @Inject()(val mangasDbConfigProvider: MangasDbConfigProv
     }
 
     def findAllByMangaId(mangaId: Int): Future[Seq[Chapter]] = mangasDbConfigProvider.run {
-        MangaEntity.table
+        MangaEntity.all
             .filter(manga => manga.id === mangaId)
             .flatMap(manga => manga.chapters)
             .sortBy(chapter => (chapter.number, chapter.subNumber))

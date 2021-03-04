@@ -16,7 +16,7 @@ class GenreRepository @Inject()(val mangasDbConfigProvider: MangasDbConfigProvid
     }
 
     def findAllByMangaId(mangaId: Int): Future[Seq[Genre]] = mangasDbConfigProvider.run {
-        MangaEntity.table
+        MangaEntity.all
             .filter(manga => manga.id === mangaId)
             .flatMap(manga => manga.genres)
             .result

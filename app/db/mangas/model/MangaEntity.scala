@@ -21,5 +21,5 @@ class MangaEntity(tag: Tag) extends Table[Manga](tag, "manga") {
 }
 
 object MangaEntity {
-    val table = TableQuery[MangaEntity]
+    val all = TableQuery[MangaEntity]
 }

@@ -12,11 +12,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class MangaRepository @Inject()(val mangasDbConfigProvider: MangasDbConfigProvider)(implicit ec: ExecutionContext) {
 
     def findAll(): Future[Seq[Manga]] = mangasDbConfigProvider.run {
-        MangaEntity.table.result
+        MangaEntity.all.result
     }
 
     def findById(id: Int): Future[Option[Manga]] = mangasDbConfigProvider.run {
-        MangaEntity.table
+        MangaEntity.all
             .filter(manga => manga.id === id)
             .result.headOption
     }
@@ -24,7 +24,7 @@ class MangaRepository @Inject()(val mangasDbConfigProvider: MangasDbConfigProvid
     def findAllByTitle(title: String): Future[Seq[Manga]] = mangasDbConfigProvider.run {
         val titleLike = s"%$title%"
 
-        MangaEntity.table
+        MangaEntity.all
             .filter(manga => manga.title.toLowerCase like titleLike)
             .result
     }
