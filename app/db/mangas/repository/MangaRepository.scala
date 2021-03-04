@@ -2,7 +2,7 @@ package db.mangas.repository
 
 import db.mangas.MangasDbConfigProvider
 import db.mangas.model.MangaTable.MangaEntity
-import db.mangas.model.{FranchiseEntity, GenreEntity, MangaTable}
+import db.mangas.model.{FranchiseTable, GenreEntity, MangaTable}
 import slick.jdbc.PostgresProfile.api._
 
 import javax.inject.{Inject, Singleton}
@@ -32,7 +32,7 @@ class MangaRepository @Inject()(mangasDbConfigProvider: MangasDbConfigProvider)(
     def findAllByFranchise(franchise: String): Future[Seq[MangaEntity]] = mangasDbConfigProvider.run {
         val franchiseLike = s"%$franchise%"
 
-        FranchiseEntity.table
+        FranchiseTable.all
             .filter(franchise => franchise.name.toLowerCase like franchiseLike)
             .flatMap(franchise => franchise.mangas)
             .distinct

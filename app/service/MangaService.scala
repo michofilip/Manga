@@ -1,6 +1,6 @@
 package service
 
-import db.mangas.repository.{FranchiseRepository, GenreRepository, MangaRepository}
+import db.mangas.repository.{GenreRepository, MangaRepository}
 import dto.{Manga, MangaDetails}
 import utils.ExceptionUtils
 
@@ -12,7 +12,7 @@ import scala.util.{Success, Try}
 class MangaService @Inject()(mangaRepository: MangaRepository,
                              chapterService: ChapterService,
                              genreRepository: GenreRepository,
-                             franchiseRepository: FranchiseRepository)
+                             franchiseService: FranchiseService)
                             (implicit ec: ExecutionContext) {
 
     def findAll(): Future[Seq[Manga]] = {
@@ -28,7 +28,7 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
             case Some(manga) =>
                 val result = for {
                     chapters <- chapterService.findAllByMangaId(mangaId)
-                    franchises <- franchiseRepository.findAllByMangaId(mangaId)
+                    franchises <- franchiseService.findAllByMangaId(mangaId)
                     genres <- genreRepository.findAllByMangaId(mangaId)
                 } yield (chapters, franchises, genres)
 
