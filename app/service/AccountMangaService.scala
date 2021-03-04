@@ -1,7 +1,7 @@
 package service
 
 import db.mangas.repository.AccountMangaRepository
-import dto.AccountMangaDetails
+import dto.{AccountMangaDetails, Manga}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -14,7 +14,7 @@ class AccountMangaService @Inject()(accountMangaRepository: AccountMangaReposito
         accountMangaRepository.findAllByAccountWithMangas(accountId).map { accountMangas =>
             accountMangas.map { case (accountManga, manga) =>
                 AccountMangaDetails(
-                    manga = manga,
+                    manga = Manga.fromEntity(manga),
                     isInCollection = accountManga.isInCollection,
                     isRead = accountManga.isRead,
                     isFavorite = accountManga.isFavorite,

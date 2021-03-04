@@ -10,7 +10,7 @@ class MangaTagEntity(_tag: Tag) extends Table[(Int, Int)](_tag, "manga_tag") {
 
     def * = (mangaId, tagId)
 
-    def mangaFk = foreignKey("manga_fk", mangaId, MangaEntity.all)(_.id)
+    def mangaFk = foreignKey("manga_fk", mangaId, MangaTable.all)(_.id)
 
     def manga = mangaFk.filter(_.id === mangaId)
 

@@ -1,7 +1,7 @@
 package db.mangas.repository
 
 import db.mangas.MangasDbConfigProvider
-import db.mangas.model.{GenreEntity, MangaGenreEntity, MangaEntity}
+import db.mangas.model.{GenreEntity, MangaGenreEntity, MangaTable}
 import dto.Genre
 import slick.jdbc.PostgresProfile.api._
 
@@ -16,7 +16,7 @@ class GenreRepository @Inject()(val mangasDbConfigProvider: MangasDbConfigProvid
     }
 
     def findAllByMangaId(mangaId: Int): Future[Seq[Genre]] = mangasDbConfigProvider.run {
-        MangaEntity.all
+        MangaTable.all
             .filter(manga => manga.id === mangaId)
             .flatMap(manga => manga.genres)
             .result

@@ -9,14 +9,15 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Success, Try}
 
 @Singleton
-class MangaService @Inject()(val mangaRepository: MangaRepository,
-                             val chapterRepository: ChapterRepository,
-                             val genreRepository: GenreRepository,
-                             val franchiseRepository: FranchiseRepository)
+class MangaService @Inject()(mangaRepository: MangaRepository,
+                             chapterRepository: ChapterRepository,
+                             genreRepository: GenreRepository,
+                             franchiseRepository: FranchiseRepository)
                             (implicit ec: ExecutionContext) {
 
     def findAll(): Future[Seq[Manga]] = {
         mangaRepository.findAll()
+            .map(Manga.fromEntities)
     }
 
     def findById(mangaId: Int): Future[Try[MangaDetails]] = {
@@ -34,7 +35,7 @@ class MangaService @Inject()(val mangaRepository: MangaRepository,
                 result.map { case (chapters, franchises, genres) =>
                     Success {
                         MangaDetails(
-                            manga = manga,
+                            manga = Manga.fromEntity(manga),
                             franchises = franchises,
                             genres = genres,
                             chapters = chapters
@@ -61,7 +62,7 @@ class MangaService @Inject()(val mangaRepository: MangaRepository,
             val eventualByIncludedGenres = if (includedGenres.isEmpty) eventualAll else mangaRepository.findAllByGenres(includedGenres)
             val eventualByExcludedGenres = if (excludedGenres.isEmpty) eventualNone else mangaRepository.findAllByGenres(excludedGenres)
 
-            val result = for {
+            val data = for {
                 all <- eventualAll
                 byTitle <- eventualByTitle
                 byFranchise <- eventualByFranchise
@@ -69,9 +70,9 @@ class MangaService @Inject()(val mangaRepository: MangaRepository,
                 byExcludedGenres <- eventualByExcludedGenres
             } yield (all.toSet, byTitle.toSet, byFranchise.toSet, byIncludedGenres.toSet, byExcludedGenres.toSet)
 
-            result.map { case (all, byTitle, byFranchise, byIncludedGenres, byExcludedGenres) =>
+            data.map { case (all, byTitle, byFranchise, byIncludedGenres, byExcludedGenres) =>
                 ((all & byTitle & byFranchise & byIncludedGenres) diff byExcludedGenres).toSeq
-            }
+            }.map(Manga.fromEntities)
 
         }
     }

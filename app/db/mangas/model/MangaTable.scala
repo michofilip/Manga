@@ -1,16 +1,16 @@
 package db.mangas.model
 
-import dto.Manga
+import db.mangas.model.MangaTable.MangaEntity
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery
 
-class MangaEntity(tag: Tag) extends Table[Manga](tag, "manga") {
+class MangaTable(tag: Tag) extends Table[MangaEntity](tag, "manga") {
 
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 
     def title = column[String]("title")
 
-    def * = (title, id).mapTo[Manga]
+    def * = (title, id).mapTo[MangaEntity]
 
     def chapters = ChapterEntity.table.filter(_.mangaId === id)
 
@@ -20,6 +20,9 @@ class MangaEntity(tag: Tag) extends Table[Manga](tag, "manga") {
 
 }
 
-object MangaEntity {
-    val all = TableQuery[MangaEntity]
+object MangaTable {
+    val all = TableQuery[MangaTable]
+
+    case class MangaEntity(title: String, id: Int = 0)
+
 }

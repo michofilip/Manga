@@ -1,7 +1,7 @@
 package db.mangas.repository
 
 import db.mangas.MangasDbConfigProvider
-import db.mangas.model.{ChapterEntity, MangaEntity}
+import db.mangas.model.{ChapterEntity, MangaTable}
 import dto.Chapter
 import slick.jdbc.PostgresProfile.api._
 
@@ -18,7 +18,7 @@ class ChapterRepository @Inject()(val mangasDbConfigProvider: MangasDbConfigProv
     }
 
     def findAllByMangaId(mangaId: Int): Future[Seq[Chapter]] = mangasDbConfigProvider.run {
-        MangaEntity.all
+        MangaTable.all
             .filter(manga => manga.id === mangaId)
             .flatMap(manga => manga.chapters)
             .sortBy(chapter => (chapter.number, chapter.subNumber))

@@ -1,8 +1,8 @@
 package db.mangas.repository
 
 import db.mangas.MangasDbConfigProvider
-import db.mangas.model.{FranchiseEntity, GenreEntity, MangaEntity}
-import dto.Manga
+import db.mangas.model.MangaTable.MangaEntity
+import db.mangas.model.{FranchiseEntity, GenreEntity, MangaTable}
 import slick.jdbc.PostgresProfile.api._
 
 import javax.inject.{Inject, Singleton}
@@ -11,25 +11,25 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class MangaRepository @Inject()(val mangasDbConfigProvider: MangasDbConfigProvider)(implicit ec: ExecutionContext) {
 
-    def findAll(): Future[Seq[Manga]] = mangasDbConfigProvider.run {
-        MangaEntity.all.result
+    def findAll(): Future[Seq[MangaEntity]] = mangasDbConfigProvider.run {
+        MangaTable.all.result
     }
 
-    def findById(id: Int): Future[Option[Manga]] = mangasDbConfigProvider.run {
-        MangaEntity.all
+    def findById(id: Int): Future[Option[MangaEntity]] = mangasDbConfigProvider.run {
+        MangaTable.all
             .filter(manga => manga.id === id)
             .result.headOption
     }
 
-    def findAllByTitle(title: String): Future[Seq[Manga]] = mangasDbConfigProvider.run {
+    def findAllByTitle(title: String): Future[Seq[MangaEntity]] = mangasDbConfigProvider.run {
         val titleLike = s"%$title%"
 
-        MangaEntity.all
+        MangaTable.all
             .filter(manga => manga.title.toLowerCase like titleLike)
             .result
     }
 
-    def findAllByFranchise(franchise: String): Future[Seq[Manga]] = mangasDbConfigProvider.run {
+    def findAllByFranchise(franchise: String): Future[Seq[MangaEntity]] = mangasDbConfigProvider.run {
         val franchiseLike = s"%$franchise%"
 
         FranchiseEntity.table
@@ -39,7 +39,7 @@ class MangaRepository @Inject()(val mangasDbConfigProvider: MangasDbConfigProvid
             .result
     }
 
-    def findAllByGenres(genres: Seq[String]): Future[Seq[Manga]] = mangasDbConfigProvider.run {
+    def findAllByGenres(genres: Seq[String]): Future[Seq[MangaEntity]] = mangasDbConfigProvider.run {
         val genresLowerCase = genres.map(_.toLowerCase)
 
         GenreEntity.table
