@@ -1,7 +1,7 @@
 package db.mangas.repository
 
 import db.mangas.MangasDbConfigProvider
-import db.mangas.model.AccountEntity
+import db.mangas.model.AccountTable
 import db.mangas.model.MangaTable.MangaEntity
 import dto.AccountManga
 import slick.jdbc.PostgresProfile.api._
@@ -13,7 +13,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AccountMangaRepository @Inject()(val mangasDbConfigProvider: MangasDbConfigProvider)(implicit ec: ExecutionContext) {
 
     def findAllByAccountWithMangas(accountId: Int): Future[Seq[(AccountManga, MangaEntity)]] = mangasDbConfigProvider.run {
-        val accountMangas = AccountEntity.table
+        val accountMangas = AccountTable.all
             .filter(account => account.id === accountId)
             .flatMap(account => account.accountMangas)
 

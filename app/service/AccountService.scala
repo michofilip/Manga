@@ -1,7 +1,7 @@
 package service
 
 import db.mangas.repository.AccountRepository
-import dto.AccountDetails
+import dto.{Account, AccountDetails}
 import utils.ExceptionUtils
 
 import javax.inject.{Inject, Singleton}
@@ -25,7 +25,7 @@ class AccountService @Inject()(accountRepository: AccountRepository,
                         accountMangaService.findAllByAccount(accountId).map { mangas =>
                             Success {
                                 AccountDetails(
-                                    account = account,
+                                    account = Account.fromEntity(account),
                                     user = user,
                                     mangas = mangas
                                 )

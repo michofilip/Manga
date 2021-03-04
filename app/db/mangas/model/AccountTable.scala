@@ -1,9 +1,9 @@
 package db.mangas.model
 
-import dto.Account
+import db.mangas.model.AccountTable.AccountEntity
 import slick.jdbc.PostgresProfile.api._
 
-class AccountEntity(tag: Tag) extends Table[Account](tag, "account") {
+class AccountTable(tag: Tag) extends Table[AccountEntity](tag, "account") {
 
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 
@@ -11,7 +11,7 @@ class AccountEntity(tag: Tag) extends Table[Account](tag, "account") {
 
     def isActive = column[Boolean]("is_active")
 
-    def * = (userId, isActive, id).mapTo[Account]
+    def * = (userId, isActive, id).mapTo[AccountEntity]
 
     def accountUserIdx = index("account_user_idx", (id, userId), unique = true)
 
@@ -21,6 +21,9 @@ class AccountEntity(tag: Tag) extends Table[Account](tag, "account") {
 
 }
 
-object AccountEntity {
-    val table = TableQuery[AccountEntity]
+object AccountTable {
+    val all = TableQuery[AccountTable]
+
+    case class AccountEntity(userId: Int, isActive: Boolean, id: Int = 0)
+
 }

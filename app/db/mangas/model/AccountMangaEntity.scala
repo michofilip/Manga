@@ -19,7 +19,7 @@ class AccountMangaEntity(tag: Tag) extends Table[AccountManga](tag, "account_man
 
     def * = (accountId, mangaId, isInCollection, isRead, isFavorite, score).mapTo[AccountManga]
 
-    def accountFk = foreignKey("account_fk", accountId, AccountEntity.table)(_.id)
+    def accountFk = foreignKey("account_fk", accountId, AccountTable.all)(_.id)
 
     def account = accountFk.filter(_.id === accountId)
 
