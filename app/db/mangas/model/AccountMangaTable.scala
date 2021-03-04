@@ -1,9 +1,9 @@
 package db.mangas.model
 
-import dto.AccountManga
+import db.mangas.model.AccountMangaTable.AccountMangaEntity
 import slick.jdbc.PostgresProfile.api._
 
-class AccountMangaEntity(tag: Tag) extends Table[AccountManga](tag, "account_manga") {
+class AccountMangaTable(tag: Tag) extends Table[AccountMangaEntity](tag, "account_manga") {
 
     def accountId = column[Int]("account_id")
 
@@ -17,7 +17,7 @@ class AccountMangaEntity(tag: Tag) extends Table[AccountManga](tag, "account_man
 
     def score = column[Option[Int]]("score")
 
-    def * = (accountId, mangaId, isInCollection, isRead, isFavorite, score).mapTo[AccountManga]
+    def * = (accountId, mangaId, isInCollection, isRead, isFavorite, score).mapTo[AccountMangaEntity]
 
     def accountFk = foreignKey("account_fk", accountId, AccountTable.all)(_.id)
 
@@ -29,6 +29,9 @@ class AccountMangaEntity(tag: Tag) extends Table[AccountManga](tag, "account_man
 
 }
 
-object AccountMangaEntity {
-    val table = TableQuery[AccountMangaEntity]
+object AccountMangaTable {
+    val all = TableQuery[AccountMangaTable]
+
+    case class AccountMangaEntity(accountId: Int, mangaId: Int, isInCollection: Boolean, isRead: Boolean, isFavorite: Boolean, score: Option[Int])
+
 }
