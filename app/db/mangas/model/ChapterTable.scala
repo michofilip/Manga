@@ -22,7 +22,7 @@ class ChapterTable(tag: Tag) extends Table[ChapterEntity](tag, "chapter") {
 
     def manga = mangaFk.filter(_.id === mangaId)
 
-    def pages = PageEntity.table.filter(_.chapterId === id)
+    def pages = PageTable.all.filter(_.chapterId === id)
 
 }
 

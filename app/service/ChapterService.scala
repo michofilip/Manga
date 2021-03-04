@@ -1,7 +1,7 @@
 package service
 
 import db.mangas.model.ChapterTable.ChapterEntity
-import db.mangas.repository.{ChapterRepository, PageRepository}
+import db.mangas.repository.ChapterRepository
 import dto.{Chapter, ChapterDetails}
 import utils.ExceptionUtils
 
@@ -11,7 +11,7 @@ import scala.util.{Success, Try}
 
 @Singleton
 class ChapterService @Inject()(chapterRepository: ChapterRepository,
-                               pageRepository: PageRepository)
+                               pageService: PageService)
                               (implicit ec: ExecutionContext) {
 
     def findAllByMangaId(mangaId: Int): Future[Seq[Chapter]] = {
@@ -40,7 +40,7 @@ class ChapterService @Inject()(chapterRepository: ChapterRepository,
             case Some(chapter) =>
                 val result = for {
                     chapters <- chapterRepository.findAllByMangaId(chapter.mangaId)
-                    pages <- pageRepository.findByChapterId(chapterId)
+                    pages <- pageService.findByChapterId(chapterId)
                 } yield (chapters, pages)
 
                 result.map { case (chapters, pages) =>

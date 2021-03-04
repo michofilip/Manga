@@ -1,10 +1,10 @@
 package db.mangas.model
 
-import dto.Page
+import db.mangas.model.PageTable.PageEntity
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery
 
-class PageEntity(tag: Tag) extends Table[Page](tag, "page") {
+class PageTable(tag: Tag) extends Table[PageEntity](tag, "page") {
 
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 
@@ -14,7 +14,7 @@ class PageEntity(tag: Tag) extends Table[Page](tag, "page") {
 
     def pageNr = column[Int]("page_nr")
 
-    def * = (key, chapterId, pageNr, id).mapTo[Page]
+    def * = (key, chapterId, pageNr, id).mapTo[PageEntity]
 
     def chapterFk = foreignKey("chapter_fk", pageNr, ChapterTable.all)(_.id)
 
@@ -22,6 +22,9 @@ class PageEntity(tag: Tag) extends Table[Page](tag, "page") {
 
 }
 
-object PageEntity {
-    val table = TableQuery[PageEntity]
+object PageTable {
+    val all = TableQuery[PageTable]
+
+    case class PageEntity(key: String, chapterId: Int, pageNr: Int, id: Int = 0)
+
 }
