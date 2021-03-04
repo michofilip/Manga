@@ -1,6 +1,7 @@
 package service
 
-import db.mangas.repository.{ChapterRepository, PageRepository}
+import db.mangas.model.ChapterTable.ChapterEntity
+import db.mangas.repository.ChapterRepository
 import dto.{Chapter, ChapterDetails}
 import utils.ExceptionUtils
 
@@ -9,12 +10,17 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Success, Try}
 
 @Singleton
-class ChapterService @Inject()(val chapterRepository: ChapterRepository,
-                               val pageRepository: PageRepository)
+class ChapterService @Inject()(chapterRepository: ChapterRepository,
+                               pageService: PageService)
                               (implicit ec: ExecutionContext) {
 
+    def findAllByMangaId(mangaId: Int): Future[Seq[Chapter]] = {
+        chapterRepository.findAllByMangaId(mangaId)
+            .map(Chapter.fromEntities)
+    }
+
     def findById(chapterId: Int): Future[Try[ChapterDetails]] = {
-        def extractPreviousAndNextChapter(chapterId: Int, chapters: Seq[Chapter]): (Option[Chapter], Option[Chapter]) = {
+        def extractPreviousAndNextChapter(chapterId: Int, chapters: Seq[ChapterEntity]): (Option[ChapterEntity], Option[ChapterEntity]) = {
             val maybePreviousChapter = chapters
                 .takeWhile(chapter => chapter.id != chapterId)
                 .lastOption
@@ -34,19 +40,14 @@ class ChapterService @Inject()(val chapterRepository: ChapterRepository,
             case Some(chapter) =>
                 val result = for {
                     chapters <- chapterRepository.findAllByMangaId(chapter.mangaId)
-                    pages <- pageRepository.findByChapterId(chapterId)
+                    pages <- pageService.findByChapterId(chapterId)
                 } yield (chapters, pages)
 
                 result.map { case (chapters, pages) =>
-                    val (maybePreviousChapter, maybeNextChapter) = extractPreviousAndNextChapter(chapterId, chapters)
+                    val (previousChapter, nextChapter) = extractPreviousAndNextChapter(chapterId, chapters)
 
                     Success {
-                        ChapterDetails(
-                            chapter = chapter,
-                            previousChapter = maybePreviousChapter,
-                            nextChapter = maybeNextChapter,
-                            pages = pages
-                        )
+                        ChapterDetails.fromEntity(chapter, previousChapter, nextChapter, pages)
                     }
                 }
         }

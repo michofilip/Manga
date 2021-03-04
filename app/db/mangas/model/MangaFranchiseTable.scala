@@ -3,7 +3,7 @@ package db.mangas.model
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery
 
-class MangaFranchiseEntity(tag: Tag) extends Table[(Int, Int)](tag, "manga_franchise") {
+class MangaFranchiseTable(t: Tag) extends Table[(Int, Int)](t, "manga_franchise") {
 
     def mangaId = column[Int]("manga_id")
 
@@ -11,16 +11,16 @@ class MangaFranchiseEntity(tag: Tag) extends Table[(Int, Int)](tag, "manga_franc
 
     def * = (mangaId, franchiseId)
 
-    def mangaFk = foreignKey("manga_fk", mangaId, MangaEntity.table)(_.id)
+    def mangaFk = foreignKey("manga_fk", mangaId, MangaTable.all)(_.id)
 
     def manga = mangaFk.filter(_.id === mangaId)
 
-    def franchiseFk = foreignKey("franchise_fk", franchiseId, FranchiseEntity.table)(_.id)
+    def franchiseFk = foreignKey("franchise_fk", franchiseId, FranchiseTable.all)(_.id)
 
     def franchise = franchiseFk.filter(_.id === franchiseId)
 
 }
 
-object MangaFranchiseEntity {
-    val table = TableQuery[MangaFranchiseEntity]
+object MangaFranchiseTable {
+    val all = TableQuery[MangaFranchiseTable]
 }

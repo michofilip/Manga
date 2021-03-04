@@ -1,6 +1,6 @@
 package service
 
-import db.mangas.repository.{ChapterRepository, FranchiseRepository, GenreRepository, MangaRepository}
+import db.mangas.repository.MangaRepository
 import dto.{Manga, MangaDetails}
 import utils.ExceptionUtils
 
@@ -9,14 +9,15 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Success, Try}
 
 @Singleton
-class MangaService @Inject()(val mangaRepository: MangaRepository,
-                             val chapterRepository: ChapterRepository,
-                             val genreRepository: GenreRepository,
-                             val franchiseRepository: FranchiseRepository)
+class MangaService @Inject()(mangaRepository: MangaRepository,
+                             chapterService: ChapterService,
+                             genreService: GenreService,
+                             franchiseService: FranchiseService)
                             (implicit ec: ExecutionContext) {
 
     def findAll(): Future[Seq[Manga]] = {
         mangaRepository.findAll()
+            .map(Manga.fromEntities)
     }
 
     def findById(mangaId: Int): Future[Try[MangaDetails]] = {
@@ -26,15 +27,15 @@ class MangaService @Inject()(val mangaRepository: MangaRepository,
 
             case Some(manga) =>
                 val result = for {
-                    chapters <- chapterRepository.findAllByMangaId(mangaId)
-                    franchises <- franchiseRepository.findAllByMangaId(mangaId)
-                    genres <- genreRepository.findAllByMangaId(mangaId)
+                    chapters <- chapterService.findAllByMangaId(mangaId)
+                    franchises <- franchiseService.findAllByMangaId(mangaId)
+                    genres <- genreService.findAllByMangaId(mangaId)
                 } yield (chapters, franchises, genres)
 
                 result.map { case (chapters, franchises, genres) =>
                     Success {
                         MangaDetails(
-                            manga = manga,
+                            manga = Manga.fromEntity(manga),
                             franchises = franchises,
                             genres = genres,
                             chapters = chapters
@@ -61,7 +62,7 @@ class MangaService @Inject()(val mangaRepository: MangaRepository,
             val eventualByIncludedGenres = if (includedGenres.isEmpty) eventualAll else mangaRepository.findAllByGenres(includedGenres)
             val eventualByExcludedGenres = if (excludedGenres.isEmpty) eventualNone else mangaRepository.findAllByGenres(excludedGenres)
 
-            val result = for {
+            val data = for {
                 all <- eventualAll
                 byTitle <- eventualByTitle
                 byFranchise <- eventualByFranchise
@@ -69,9 +70,9 @@ class MangaService @Inject()(val mangaRepository: MangaRepository,
                 byExcludedGenres <- eventualByExcludedGenres
             } yield (all.toSet, byTitle.toSet, byFranchise.toSet, byIncludedGenres.toSet, byExcludedGenres.toSet)
 
-            result.map { case (all, byTitle, byFranchise, byIncludedGenres, byExcludedGenres) =>
+            data.map { case (all, byTitle, byFranchise, byIncludedGenres, byExcludedGenres) =>
                 ((all & byTitle & byFranchise & byIncludedGenres) diff byExcludedGenres).toSeq
-            }
+            }.map(Manga.fromEntities)
 
         }
     }
