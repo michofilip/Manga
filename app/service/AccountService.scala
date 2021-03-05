@@ -11,6 +11,7 @@ import scala.util.{Failure, Success, Try}
 @Singleton
 class AccountService @Inject()(accountRepository: AccountRepository,
                                accountMangaService: AccountMangaService,
+                               tagService: TagService,
                                userService: UserService)
                               (implicit ec: ExecutionContext) {
 
@@ -22,11 +23,17 @@ class AccountService @Inject()(accountRepository: AccountRepository,
             case Some(account) =>
                 userService.findById(account.userId).flatMap {
                     case Success(user) =>
-                        accountMangaService.findAllByAccount(accountId).map { accountMangas =>
+                        val data = for {
+                            accountMangas <- accountMangaService.findAllByAccount(accountId)
+                            tags <- tagService.findAllByAccountId(accountId)
+                        } yield (accountMangas, tags)
+
+                        data.map { case (accountMangas, tags) =>
                             Success {
                                 AccountDetails(
                                     account = Account.fromEntity(account),
                                     user = user,
+                                    tags = tags,
                                     accountMangas = accountMangas
                                 )
                             }

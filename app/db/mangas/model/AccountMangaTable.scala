@@ -27,6 +27,8 @@ class AccountMangaTable(t: Tag) extends Table[AccountMangaEntity](t, "account_ma
 
     def manga = mangaFk.filter(_.id === mangaId)
 
+    def tags = MangaTagTable.all.filter(_.mangaId === mangaId).flatMap(_.tag)
+
 }
 
 object AccountMangaTable {

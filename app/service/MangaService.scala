@@ -26,13 +26,13 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
                 ExceptionUtils.noSuchElementException(s"Manga id $mangaId not found!")
 
             case Some(manga) =>
-                val result = for {
+                val data = for {
                     chapters <- chapterService.findAllByMangaId(mangaId)
                     franchises <- franchiseService.findAllByMangaId(mangaId)
                     genres <- genreService.findAllByMangaId(mangaId)
                 } yield (chapters, franchises, genres)
 
-                result.map { case (chapters, franchises, genres) =>
+                data.map { case (chapters, franchises, genres) =>
                     Success {
                         MangaDetails(
                             manga = Manga.fromEntity(manga),
