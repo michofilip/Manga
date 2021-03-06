@@ -3,7 +3,7 @@ package dto
 import db.mangas.model.AccountMangaTable.AccountMangaEntity
 import play.api.libs.json.{Json, OWrites}
 
-case class AccountManga(accountId: Int, manga: Manga, isInCollection: Boolean, isRead: Boolean, isFavorite: Boolean, score: Option[Int], tags: Seq[Tag])
+case class AccountManga(accountId: Int, manga: Manga, isInCollection: Boolean, isRead: Boolean, isFavorite: Boolean, score: Option[Double], tags: Seq[Tag])
 
 object AccountManga {
     implicit val writes: OWrites[AccountManga] = Json.writes[AccountManga]

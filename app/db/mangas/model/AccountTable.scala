@@ -13,7 +13,7 @@ class AccountTable(t: Tag) extends Table[AccountEntity](t, "account") {
 
     def * = (userId, isActive, id).mapTo[AccountEntity]
 
-    def accountUserIdx = index("account_user_idx", (id, userId), unique = true)
+    def userIdx = index("user_idx", (userId), unique = true)
 
     def tags = TagTable.all.filter(_.accountId === id)
 

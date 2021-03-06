@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS account
     is_active BOOLEAN NOT NULL
 );
 
-CREATE UNIQUE INDEX account_user_idx ON account (id, user_id);
+CREATE UNIQUE INDEX user_idx ON account (user_id);
 
 CREATE TABLE IF NOT EXISTS tag
 (
@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS account_manga
     is_in_collection BOOLEAN NOT NULL,
     is_read          BOOLEAN NOT NULL,
     is_favorite      BOOLEAN NOT NULL,
-    score            INT,
+    score            REAL,
 
     CONSTRAINT manga_fk FOREIGN KEY (manga_id) REFERENCES manga (id),
     CONSTRAINT account_fk FOREIGN KEY (account_id) REFERENCES account (id)
@@ -109,7 +109,6 @@ DROP TABLE IF EXISTS genre CASCADE;
 DROP TABLE IF EXISTS manga_genre CASCADE;
 DROP TABLE IF EXISTS franchise CASCADE;
 DROP TABLE IF EXISTS manga_franchise CASCADE;
-
 DROP TABLE IF EXISTS account CASCADE;
 DROP TABLE IF EXISTS tag CASCADE;
 DROP TABLE IF EXISTS account_manga CASCADE;

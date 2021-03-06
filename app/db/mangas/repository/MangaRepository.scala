@@ -2,7 +2,7 @@ package db.mangas.repository
 
 import db.mangas.MangasDbConfigProvider
 import db.mangas.model.MangaTable.MangaEntity
-import db.mangas.model.{FranchiseTable, GenreTable, MangaTable}
+import db.mangas.model.{AccountMangaTable, FranchiseTable, GenreTable, MangaTable}
 import slick.jdbc.PostgresProfile.api._
 
 import javax.inject.{Inject, Singleton}
@@ -47,5 +47,13 @@ class MangaRepository @Inject()(mangasDbConfigProvider: MangasDbConfigProvider)(
             .flatMap(genre => genre.mangas)
             .distinct
             .result
+    }
+
+    def findAvgScoreGroupByMangaId(): Future[Seq[(Int, Option[Double])]] = mangasDbConfigProvider.run {
+        AccountMangaTable.all
+            .groupBy(accountManga => accountManga.mangaId)
+            .map { case (mangaId, accountMangas) =>
+                mangaId -> accountMangas.map(accountManga => accountManga.score).avg
+            }.result
     }
 }
