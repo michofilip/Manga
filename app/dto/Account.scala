@@ -3,6 +3,7 @@ package dto
 import db.mangas.model.AccountTable.AccountEntity
 import play.api.libs.json.{Json, OWrites}
 
+@Deprecated
 case class Account(userId: Int, isActive: Boolean, id: Int = 0)
 
 object Account {

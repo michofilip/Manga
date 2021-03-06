@@ -1,7 +1,7 @@
 package service
 
 import db.mangas.repository.AccountRepository
-import dto.{Account, AccountDetails}
+import dto.{AccountDetails, AccountV2}
 import utils.ExceptionUtils
 
 import javax.inject.{Inject, Singleton}
@@ -20,8 +20,8 @@ class AccountService @Inject()(accountRepository: AccountRepository,
             case None =>
                 ExceptionUtils.noSuchElementException(s"Account id $accountId not found!")
 
-            case Some(account) =>
-                userService.findById(account.userId).flatMap {
+            case Some(accountEntity) =>
+                userService.findById(accountEntity.userId).flatMap {
                     case Success(user) =>
                         val data = for {
                             accountMangas <- accountMangaService.findAllByAccount(accountId)
@@ -29,10 +29,15 @@ class AccountService @Inject()(accountRepository: AccountRepository,
                         } yield (accountMangas, tags)
 
                         data.map { case (accountMangas, tags) =>
+                            val account = AccountV2(
+                                id = accountEntity.id,
+                                isActive = accountEntity.isActive,
+                                user = user
+                            )
+
                             Success {
                                 AccountDetails(
-                                    account = Account.fromEntity(account),
-                                    user = user,
+                                    account = account,
                                     tags = tags,
                                     accountMangas = accountMangas
                                 )
