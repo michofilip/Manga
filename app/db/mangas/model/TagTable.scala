@@ -17,6 +17,8 @@ class TagTable(t: Tag) extends Table[TagEntity](t, "tag") {
 
     def accountFk = foreignKey("account_fk", accountId, AccountTable.all)(_.id)
 
+    def account = accountFk.filter(_.id === accountId)
+
     def mangas = MangaTagTable.all.filter(_.tagId === id).flatMap(_.manga)
 
 }

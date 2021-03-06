@@ -15,7 +15,7 @@ class AccountMangaTable(t: Tag) extends Table[AccountMangaEntity](t, "account_ma
 
     def isFavorite = column[Boolean]("is_favorite")
 
-    def score = column[Option[Int]]("score")
+    def score = column[Option[Double]]("score")
 
     def * = (accountId, mangaId, isInCollection, isRead, isFavorite, score).mapTo[AccountMangaEntity]
 
@@ -27,11 +27,13 @@ class AccountMangaTable(t: Tag) extends Table[AccountMangaEntity](t, "account_ma
 
     def manga = mangaFk.filter(_.id === mangaId)
 
+    def tags = MangaTagTable.all.filter(_.mangaId === mangaId).flatMap(_.tag)
+
 }
 
 object AccountMangaTable {
     val all = TableQuery[AccountMangaTable]
 
-    case class AccountMangaEntity(accountId: Int, mangaId: Int, isInCollection: Boolean, isRead: Boolean, isFavorite: Boolean, score: Option[Int])
+    case class AccountMangaEntity(accountId: Int, mangaId: Int, isInCollection: Boolean, isRead: Boolean, isFavorite: Boolean, score: Option[Double])
 
 }

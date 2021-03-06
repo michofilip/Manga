@@ -26,18 +26,20 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
                 ExceptionUtils.noSuchElementException(s"Manga id $mangaId not found!")
 
             case Some(manga) =>
-                val result = for {
+                val data = for {
                     chapters <- chapterService.findAllByMangaId(mangaId)
                     franchises <- franchiseService.findAllByMangaId(mangaId)
                     genres <- genreService.findAllByMangaId(mangaId)
-                } yield (chapters, franchises, genres)
+                    avgScores <- findAvgScoreGroupByMangaId()
+                } yield (chapters, franchises, genres, avgScores)
 
-                result.map { case (chapters, franchises, genres) =>
+                data.map { case (chapters, franchises, genres, avgScores) =>
                     Success {
                         MangaDetails(
                             manga = Manga.fromEntity(manga),
                             franchises = franchises,
                             genres = genres,
+                            avgScore = avgScores(mangaId),
                             chapters = chapters
                         )
                     }
@@ -73,8 +75,11 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
             data.map { case (all, byTitle, byFranchise, byIncludedGenres, byExcludedGenres) =>
                 ((all & byTitle & byFranchise & byIncludedGenres) diff byExcludedGenres).toSeq
             }.map(Manga.fromEntities)
-
         }
+    }
+
+    private def findAvgScoreGroupByMangaId(): Future[Map[Int, Option[Double]]] = {
+        mangaRepository.findAvgScoreGroupByMangaId().map(mangaIdAvgScores => mangaIdAvgScores.toMap)
     }
 
 }
