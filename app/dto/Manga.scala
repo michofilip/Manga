@@ -3,6 +3,7 @@ package dto
 import db.mangas.model.MangaTable.MangaEntity
 import play.api.libs.json.{Json, OWrites}
 
+@Deprecated
 case class Manga(title: String, id: Int = 0)
 
 object Manga {
