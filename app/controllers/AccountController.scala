@@ -10,7 +10,7 @@ import scala.util.{Failure, Success}
 
 @Singleton
 class AccountController @Inject()(val controllerComponents: ControllerComponents,
-                                  val accountService: AccountService)
+                                  accountService: AccountService)
                                  (implicit ec: ExecutionContext) extends BaseController {
 
     def findById(accountId: Int): Action[AnyContent] = Action.async { implicit request =>

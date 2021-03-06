@@ -16,8 +16,8 @@ class TagService @Inject()(tagRepository: TagRepository)
     }
 
     def findAllByAccountIdGroupByMangaId(accountId: Int): Future[Map[Int, Seq[Tag]]] = {
-        tagRepository.findAllByAccountIdGroupByMangaId(accountId).map { mangaIdTags =>
-            mangaIdTags.groupMap { case (mangaId, _) => mangaId } { case (_, tag) => Tag.fromEntity(tag) }
+        tagRepository.findAllByAccountIdGroupByMangaId(accountId).map { mangaIdTagEntities =>
+            mangaIdTagEntities.groupMap { case (mangaId, _) => mangaId } { case (_, tagEntity) => Tag.fromEntity(tagEntity) }
         }
     }
 

@@ -11,7 +11,7 @@ import scala.util.{Failure, Success}
 
 @Singleton
 class UserController @Inject()(val controllerComponents: ControllerComponents,
-                               val userService: UserService)
+                               userService: UserService)
                               (implicit ec: ExecutionContext) extends BaseController {
 
     def findAll(): Action[AnyContent] = Action.async { implicit request =>

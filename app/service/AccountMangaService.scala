@@ -1,5 +1,7 @@
 package service
 
+import db.mangas.model.AccountMangaTable.AccountMangaEntity
+import db.mangas.model.MangaTable.MangaEntity
 import db.mangas.repository.AccountMangaRepository
 import dto.{AccountManga, Manga}
 
@@ -8,20 +10,33 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AccountMangaService @Inject()(accountMangaRepository: AccountMangaRepository,
+                                    mangaService: MangaService,
                                     tagService: TagService)
                                    (implicit ec: ExecutionContext) {
 
     def findAllByAccount(accountId: Int): Future[Seq[AccountManga]] = {
         val data = for {
-            accountMangas <- accountMangaRepository.findAllByAccountWithMangas(accountId)
+            accountMangaWithMangaEntities <- accountMangaRepository.findAllWithMangasByAccountId(accountId)
+            (accountMangaEntities, mangaIdToManga) <- extractFromAccountMangasWithMangas(accountMangaWithMangaEntities)
             mangaIdToTags <- tagService.findAllByAccountIdGroupByMangaId(accountId)
-        } yield (accountMangas, mangaIdToTags)
+        } yield (accountMangaEntities, mangaIdToManga, mangaIdToTags)
 
-        data.map { case (accountMangas, mangaIdToTags) =>
-            accountMangas.map { case (accountManga, manga) =>
-                AccountManga.fromEntity(accountManga, Manga.fromEntity(manga), mangaIdToTags.getOrElse(manga.id, Seq.empty))
+        data.map { case (accountMangaEntities, mangaIdToManga, mangaIdToTags) =>
+            accountMangaEntities.map { accountMangaEntity =>
+                AccountManga.fromEntity(accountMangaEntity, mangaIdToManga(accountMangaEntity.mangaId), mangaIdToTags.getOrElse(accountMangaEntity.mangaId, Seq.empty))
             }
         }
+    }
+
+    private def extractFromAccountMangasWithMangas(accountMangaWithMangaEntities: Seq[(AccountMangaEntity, MangaEntity)]): Future[(Seq[AccountMangaEntity], Map[Int, Manga])] = {
+        val (accountMangaEntities, mangaEntities) = accountMangaWithMangaEntities.unzip
+
+        val futureAccountMangaEntities = Future.successful(accountMangaEntities)
+        val futureMangaIdToManga = mangaService.convertToMangas(mangaEntities).map { mangas =>
+            mangas.map(manga => manga.id -> manga).toMap
+        }
+
+        futureAccountMangaEntities zip futureMangaIdToManga
     }
 
 }

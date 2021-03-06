@@ -10,9 +10,15 @@ import scala.concurrent.{ExecutionContext, Future}
 class FranchiseService @Inject()(franchiseRepository: FranchiseRepository)
                                 (implicit ec: ExecutionContext) {
 
-    def findAllByMangaId(mangaId: Int): Future[Seq[Franchise]] = {
-        franchiseRepository.findAllByMangaId(mangaId)
+    def findAll(): Future[Seq[Franchise]] = {
+        franchiseRepository.findAll()
             .map(Franchise.fromEntities)
+    }
+
+    def findAllGroupByMangaId(): Future[Map[Int, Seq[Franchise]]] = {
+        franchiseRepository.findAllGroupByMangaId().map { mangaIdFranchiseEntities =>
+            mangaIdFranchiseEntities.groupMap { case (mangaId, _) => mangaId } { case (_, franchiseEntity) => Franchise.fromEntity(franchiseEntity) }
+        }
     }
 
 }

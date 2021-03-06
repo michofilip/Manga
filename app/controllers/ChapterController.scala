@@ -10,7 +10,7 @@ import scala.util.{Failure, Success}
 
 @Singleton
 class ChapterController @Inject()(val controllerComponents: ControllerComponents,
-                                  val chapterService: ChapterService)
+                                  chapterService: ChapterService)
                                  (implicit ec: ExecutionContext) extends BaseController {
 
     def findById(chapterId: Int): Action[AnyContent] = Action.async { implicit request =>

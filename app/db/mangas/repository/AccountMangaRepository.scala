@@ -12,17 +12,13 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AccountMangaRepository @Inject()(mangasDbConfigProvider: MangasDbConfigProvider)(implicit ec: ExecutionContext) {
 
-    def findAllByAccountWithMangas(accountId: Int): Future[Seq[(AccountMangaEntity, MangaEntity)]] = mangasDbConfigProvider.run {
-        val accountMangas = AccountTable.all
+    def findAllWithMangasByAccountId(accountId: Int): Future[Seq[(AccountMangaEntity, MangaEntity)]] = mangasDbConfigProvider.run {
+        AccountTable.all
             .filter(account => account.id === accountId)
             .flatMap(account => account.accountMangas)
-
-        val query = for {
-            accountManga <- accountMangas
-            manga <- accountManga.manga
-        } yield (accountManga, manga)
-
-        query.result
+            .flatMap { accountManga =>
+                accountManga.manga.map(manga => accountManga -> manga)
+            }.result
     }
 
 }

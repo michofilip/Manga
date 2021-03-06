@@ -4,24 +4,33 @@ import db.users.model.UserTable.UserEntity
 import form.UserForm
 import play.api.libs.json.{Json, OWrites}
 
-case class User(login: String, id: Int = 0)
+case class User(id: Int, login: String)
 
 object User {
     implicit val writes: OWrites[User] = Json.writes[User]
 
-    def fromEntity(userEntity: UserEntity): User = userEntity match {
-        case UserEntity(login, id) => User(login, id)
+    def fromEntity(userEntity: UserEntity): User = {
+        User(
+            id = userEntity.id,
+            login = userEntity.login
+        )
     }
 
     def fromEntities(userEntities: Seq[UserEntity]): Seq[User] = {
         userEntities.map(fromEntity)
     }
 
-    def toEntity(user: User): UserEntity = user match {
-        case User(login, id) => UserEntity(login, id)
+    def toEntity(user: User): UserEntity = {
+        UserEntity(
+            id = user.id,
+            login = user.login
+        )
     }
 
-    def from(userForm: UserForm): User = userForm match {
-        case UserForm(login, id) => User(login, id.getOrElse(0))
+    def from(userForm: UserForm): User = {
+        User(
+            id = userForm.id.getOrElse(0),
+            login = userForm.login
+        )
     }
 }
