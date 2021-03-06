@@ -3,7 +3,7 @@ package service
 import db.mangas.model.AccountMangaTable.AccountMangaEntity
 import db.mangas.model.MangaTable.MangaEntity
 import db.mangas.repository.AccountMangaRepository
-import dto.{AccountManga, MangaV2}
+import dto.{AccountManga, Manga}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -28,7 +28,7 @@ class AccountMangaService @Inject()(accountMangaRepository: AccountMangaReposito
         }
     }
 
-    private def extractFromAccountMangasWithMangas(accountMangasWithMangas: Seq[(AccountMangaEntity, MangaEntity)]): Future[(Seq[AccountMangaEntity], Map[Int, MangaV2])] = {
+    private def extractFromAccountMangasWithMangas(accountMangasWithMangas: Seq[(AccountMangaEntity, MangaEntity)]): Future[(Seq[AccountMangaEntity], Map[Int, Manga])] = {
         val (accountMangas, mangas) = accountMangasWithMangas.unzip
 
         val futureAccountMangas = Future.successful(accountMangas)

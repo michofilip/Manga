@@ -2,7 +2,7 @@ package service
 
 import db.mangas.model.MangaTable.MangaEntity
 import db.mangas.repository.MangaRepository
-import dto.{MangaV2, MangaWithChapters}
+import dto.{Manga, MangaWithChapters}
 import utils.ExceptionUtils
 
 import javax.inject.{Inject, Singleton}
@@ -16,7 +16,7 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
                              franchiseService: FranchiseService)
                             (implicit ec: ExecutionContext) {
 
-    def findAll(): Future[Seq[MangaV2]] = {
+    def findAll(): Future[Seq[Manga]] = {
         mangaRepository.findAll()
             .flatMap(convertToMangas)
     }
@@ -46,7 +46,7 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
     def findAllBySearchParameters(maybeTitle: Option[String],
                                   maybeFranchise: Option[String],
                                   includedGenres: Seq[String],
-                                  excludedGenres: Seq[String]): Future[Seq[MangaV2]] = {
+                                  excludedGenres: Seq[String]): Future[Seq[Manga]] = {
         if (maybeTitle.isEmpty && maybeFranchise.isEmpty && includedGenres.isEmpty && excludedGenres.isEmpty) {
             Future.successful {
                 Seq.empty
@@ -74,11 +74,11 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
         }
     }
 
-    private def convertToManga(manga: MangaEntity): Future[MangaV2] = {
+    private def convertToManga(manga: MangaEntity): Future[Manga] = {
         convertToMangas(Seq(manga)).map(mangas => mangas.head)
     }
 
-    def convertToMangas(mangas: Seq[MangaEntity]): Future[Seq[MangaV2]] = {
+    def convertToMangas(mangas: Seq[MangaEntity]): Future[Seq[Manga]] = {
         val data = for {
             franchises <- franchiseService.findAllGroupByMangaId()
             genres <- genreService.findAllGroupByMangaId()
@@ -87,7 +87,7 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
 
         data.map { case (franchises, genres, avgScores) =>
             mangas.map { manga =>
-                MangaV2(
+                Manga(
                     id = manga.id,
                     title = manga.title,
                     franchises = franchises.getOrElse(manga.id, Seq.empty),
