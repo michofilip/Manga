@@ -91,16 +91,17 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
     private def convertToMangas(mangas: Seq[MangaEntity]): Future[Seq[MangaV2]] = {
         val data = for {
             franchises <- franchiseService.findAllGroupByMangaId()
+            genres <- genreService.findAllGroupByMangaId()
             avgScores <- findAvgScoreGroupByMangaId()
-        } yield (franchises, avgScores)
+        } yield (franchises, genres, avgScores)
 
-        data.map { case (franchises, avgScores) =>
+        data.map { case (franchises, genres, avgScores) =>
             mangas.map { manga =>
                 MangaV2(
                     id = manga.id,
                     title = manga.title,
                     franchises = franchises.getOrElse(manga.id, Seq.empty),
-                    genres = Seq.empty, // TODO implement genres
+                    genres = genres.getOrElse(manga.id, Seq.empty),
                     avgScore = avgScores.get(manga.id)
                 )
             }
@@ -109,9 +110,7 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
 
     private def findAvgScoreGroupByMangaId(): Future[Map[Int, Double]] = {
         mangaRepository.findAvgScoreGroupByMangaId().map { mangaIdAvgScores =>
-            mangaIdAvgScores.collect { case (mangaId, Some(avgScore)) =>
-                mangaId -> avgScore
-            }
+            mangaIdAvgScores.collect { case (mangaId, Some(avgScore)) => mangaId -> avgScore }
         }.map(mangaIdAvgScores => mangaIdAvgScores.toMap)
     }
 
