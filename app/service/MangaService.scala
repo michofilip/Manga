@@ -2,7 +2,7 @@ package service
 
 import db.mangas.model.MangaTable.MangaEntity
 import db.mangas.repository.MangaRepository
-import dto.{Manga, MangaDetails, MangaV2}
+import dto.{MangaV2, MangaWithChapters}
 import utils.ExceptionUtils
 
 import javax.inject.{Inject, Singleton}
@@ -16,36 +16,26 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
                              franchiseService: FranchiseService)
                             (implicit ec: ExecutionContext) {
 
-    //    def findAll(): Future[Seq[Manga]] = {
-    //        mangaRepository.findAll()
-    //            .map(Manga.fromEntities)
-    //    }
-
     def findAll(): Future[Seq[MangaV2]] = {
         mangaRepository.findAll()
             .flatMap(convertToMangas)
     }
 
-    def findById(mangaId: Int): Future[Try[MangaDetails]] = {
+    def findById(mangaId: Int): Future[Try[MangaWithChapters]] = {
         mangaRepository.findById(mangaId).flatMap {
             case None =>
                 ExceptionUtils.noSuchElementException(s"Manga id $mangaId not found!")
 
             case Some(manga) =>
                 val data = for {
+                    manga <- convertToManga(manga)
                     chapters <- chapterService.findAllByMangaId(mangaId)
-                    franchises <- franchiseService.findAllByMangaId(mangaId)
-                    genres <- genreService.findAllByMangaId(mangaId)
-                    avgScores <- findAvgScoreGroupByMangaId()
-                } yield (chapters, franchises, genres, avgScores)
+                } yield (manga, chapters)
 
-                data.map { case (chapters, franchises, genres, avgScores) =>
+                data.map { case (manga, chapters) =>
                     Success {
-                        MangaDetails(
-                            manga = Manga.fromEntity(manga),
-                            franchises = franchises,
-                            genres = genres,
-                            avgScore = avgScores.get(mangaId),
+                        MangaWithChapters(
+                            manga = manga,
                             chapters = chapters
                         )
                     }

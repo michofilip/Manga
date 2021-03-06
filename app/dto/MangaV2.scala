@@ -2,6 +2,7 @@ package dto
 
 import play.api.libs.json.{Json, OWrites}
 
+// TODO rename to Manga
 case class MangaV2(id: Int, title: String, franchises: Seq[Franchise], genres: Seq[Genre], avgScore: Option[Double])
 
 object MangaV2 {

@@ -21,7 +21,7 @@ class MangaController @Inject()(val controllerComponents: ControllerComponents,
 
     def findById(mangaId: Int): Action[AnyContent] = Action.async { implicit request =>
         mangaService.findById(mangaId).map {
-            case Success(mangaDetails) => Ok(Json.toJson(mangaDetails))
+            case Success(mangaWithChapters) => Ok(Json.toJson(mangaWithChapters))
             case Failure(e) => NotFound(e.getMessage)
         }
     }
