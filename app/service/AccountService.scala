@@ -1,7 +1,7 @@
 package service
 
 import db.mangas.repository.AccountRepository
-import dto.{AccountDetails, AccountV2}
+import dto.{AccountDetails, Account}
 import utils.ExceptionUtils
 
 import javax.inject.{Inject, Singleton}
@@ -29,7 +29,7 @@ class AccountService @Inject()(accountRepository: AccountRepository,
                         } yield (accountMangas, tags)
 
                         data.map { case (accountMangas, tags) =>
-                            val account = AccountV2(
+                            val account = Account(
                                 id = accountEntity.id,
                                 isActive = accountEntity.isActive,
                                 user = user
