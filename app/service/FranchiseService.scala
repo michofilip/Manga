@@ -10,7 +10,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class FranchiseService @Inject()(franchiseRepository: FranchiseRepository)
                                 (implicit ec: ExecutionContext) {
 
-    // TODO create controller
     def findAll(): Future[Seq[Franchise]] = {
         franchiseRepository.findAll()
             .map(Franchise.fromEntities)
