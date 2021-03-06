@@ -1,7 +1,8 @@
 package service
 
+import db.mangas.model.MangaTable.MangaEntity
 import db.mangas.repository.MangaRepository
-import dto.{Manga, MangaDetails}
+import dto.{Manga, MangaDetails, MangaV2}
 import utils.ExceptionUtils
 
 import javax.inject.{Inject, Singleton}
@@ -15,9 +16,14 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
                              franchiseService: FranchiseService)
                             (implicit ec: ExecutionContext) {
 
-    def findAll(): Future[Seq[Manga]] = {
+    //    def findAll(): Future[Seq[Manga]] = {
+    //        mangaRepository.findAll()
+    //            .map(Manga.fromEntities)
+    //    }
+
+    def findAll(): Future[Seq[MangaV2]] = {
         mangaRepository.findAll()
-            .map(Manga.fromEntities)
+            .flatMap(convertToMangas)
     }
 
     def findById(mangaId: Int): Future[Try[MangaDetails]] = {
@@ -39,7 +45,7 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
                             manga = Manga.fromEntity(manga),
                             franchises = franchises,
                             genres = genres,
-                            avgScore = avgScores(mangaId),
+                            avgScore = avgScores.get(mangaId),
                             chapters = chapters
                         )
                     }
@@ -78,8 +84,35 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
         }
     }
 
-    private def findAvgScoreGroupByMangaId(): Future[Map[Int, Option[Double]]] = {
-        mangaRepository.findAvgScoreGroupByMangaId().map(mangaIdAvgScores => mangaIdAvgScores.toMap)
+    private def convertToManga(manga: MangaEntity): Future[MangaV2] = {
+        convertToMangas(Seq(manga)).map(mangas => mangas.head)
+    }
+
+    private def convertToMangas(mangas: Seq[MangaEntity]): Future[Seq[MangaV2]] = {
+        val data = for {
+            franchises <- franchiseService.findAllGroupByMangaId()
+            avgScores <- findAvgScoreGroupByMangaId()
+        } yield (franchises, avgScores)
+
+        data.map { case (franchises, avgScores) =>
+            mangas.map { manga =>
+                MangaV2(
+                    id = manga.id,
+                    title = manga.title,
+                    franchises = franchises.getOrElse(manga.id, Seq.empty),
+                    genres = Seq.empty, // TODO implement genres
+                    avgScore = avgScores.get(manga.id)
+                )
+            }
+        }
+    }
+
+    private def findAvgScoreGroupByMangaId(): Future[Map[Int, Double]] = {
+        mangaRepository.findAvgScoreGroupByMangaId().map { mangaIdAvgScores =>
+            mangaIdAvgScores.collect { case (mangaId, Some(avgScore)) =>
+                mangaId -> avgScore
+            }
+        }.map(mangaIdAvgScores => mangaIdAvgScores.toMap)
     }
 
 }

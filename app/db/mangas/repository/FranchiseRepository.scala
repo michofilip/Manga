@@ -15,11 +15,19 @@ class FranchiseRepository @Inject()(mangasDbConfigProvider: MangasDbConfigProvid
         FranchiseTable.all.result
     }
 
+    @Deprecated
     def findAllByMangaId(mangaId: Int): Future[Seq[FranchiseEntity]] = mangasDbConfigProvider.run {
         MangaTable.all
             .filter(manga => manga.id === mangaId)
             .flatMap(manga => manga.franchises)
             .result
+    }
+
+    def findAllGroupByMangaId(): Future[Seq[(Int, FranchiseEntity)]] = mangasDbConfigProvider.run {
+        MangaTable.all
+            .flatMap { manga =>
+                manga.franchises.map(franchise => manga.id -> franchise)
+            }.result
     }
 
 }
