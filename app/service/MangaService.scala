@@ -56,7 +56,7 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
     def findAllBySearchParameters(maybeTitle: Option[String],
                                   maybeFranchise: Option[String],
                                   includedGenres: Seq[String],
-                                  excludedGenres: Seq[String]): Future[Seq[Manga]] = {
+                                  excludedGenres: Seq[String]): Future[Seq[MangaV2]] = {
         if (maybeTitle.isEmpty && maybeFranchise.isEmpty && includedGenres.isEmpty && excludedGenres.isEmpty) {
             Future.successful {
                 Seq.empty
@@ -80,7 +80,7 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
 
             data.map { case (all, byTitle, byFranchise, byIncludedGenres, byExcludedGenres) =>
                 ((all & byTitle & byFranchise & byIncludedGenres) diff byExcludedGenres).toSeq
-            }.map(Manga.fromEntities)
+            }.flatMap(convertToMangas)
         }
     }
 
