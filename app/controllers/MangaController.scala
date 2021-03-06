@@ -10,7 +10,7 @@ import scala.util.{Failure, Success}
 
 @Singleton
 class MangaController @Inject()(val controllerComponents: ControllerComponents,
-                                val mangaService: MangaService)
+                                mangaService: MangaService)
                                (implicit ec: ExecutionContext) extends BaseController {
 
     def findAll(): Action[AnyContent] = Action.async { implicit request =>

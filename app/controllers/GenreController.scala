@@ -9,7 +9,7 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class GenreController @Inject()(val controllerComponents: ControllerComponents,
-                                val genreService: GenreService)
+                                genreService: GenreService)
                                (implicit ec: ExecutionContext) extends BaseController {
 
     def findAll(): Action[AnyContent] = Action.async { implicit request =>

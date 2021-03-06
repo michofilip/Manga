@@ -13,7 +13,7 @@ import scala.util.{Failure, Success}
 
 @Singleton
 class FileController @Inject()(val controllerComponents: ControllerComponents,
-                               val fileService: FileService)
+                               fileService: FileService)
                               (implicit ec: ExecutionContext) extends BaseController {
 
     def findByKey(key: String): Action[AnyContent] = Action.async { implicit request =>
