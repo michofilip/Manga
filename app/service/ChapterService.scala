@@ -18,7 +18,6 @@ class ChapterService @Inject()(chapterRepository: ChapterRepository,
             .map(Chapter.fromEntities)
     }
 
-    // TODO add manga
     def findById(chapterId: Int): Future[Try[ChapterDetails]] = {
         def extractPreviousAndNextChapter(chapterId: Int, chapters: Seq[Chapter]): (Option[Chapter], Option[Chapter]) = {
             val maybePreviousChapter = chapters
