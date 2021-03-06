@@ -17,10 +17,10 @@ class FileService @Inject()(val fileRepository: FileRepository)
             case None =>
                 ExceptionUtils.noSuchElementException(s"File key $key not found!")
 
-            case Some(file) =>
+            case Some(fileEntity) =>
                 Future.successful {
                     Success {
-                        File.fromEntity(file)
+                        File.fromEntity(fileEntity)
                     }
                 }
         }

@@ -1,6 +1,5 @@
 package service
 
-import db.mangas.model.ChapterTable.ChapterEntity
 import db.mangas.repository.ChapterRepository
 import dto.{Chapter, ChapterDetails}
 import utils.ExceptionUtils
@@ -19,8 +18,9 @@ class ChapterService @Inject()(chapterRepository: ChapterRepository,
             .map(Chapter.fromEntities)
     }
 
+    // TODO add manga
     def findById(chapterId: Int): Future[Try[ChapterDetails]] = {
-        def extractPreviousAndNextChapter(chapterId: Int, chapters: Seq[ChapterEntity]): (Option[ChapterEntity], Option[ChapterEntity]) = {
+        def extractPreviousAndNextChapter(chapterId: Int, chapters: Seq[Chapter]): (Option[Chapter], Option[Chapter]) = {
             val maybePreviousChapter = chapters
                 .takeWhile(chapter => chapter.id != chapterId)
                 .lastOption
@@ -37,17 +37,22 @@ class ChapterService @Inject()(chapterRepository: ChapterRepository,
             case None =>
                 ExceptionUtils.noSuchElementException(s"Chapter id $chapterId not found!")
 
-            case Some(chapter) =>
-                val result = for {
-                    chapters <- chapterRepository.findAllByMangaId(chapter.mangaId)
+            case Some(chapterEntity) =>
+                val data = for {
+                    chapters <- findAllByMangaId(chapterEntity.mangaId)
                     pages <- pageService.findByChapterId(chapterId)
                 } yield (chapters, pages)
 
-                result.map { case (chapters, pages) =>
+                data.map { case (chapters, pages) =>
                     val (previousChapter, nextChapter) = extractPreviousAndNextChapter(chapterId, chapters)
 
                     Success {
-                        ChapterDetails.fromEntity(chapter, previousChapter, nextChapter, pages)
+                        ChapterDetails(
+                            chapter = Chapter.fromEntity(chapterEntity),
+                            previousChapter = previousChapter,
+                            nextChapter = nextChapter,
+                            pages = pages
+                        )
                     }
                 }
         }

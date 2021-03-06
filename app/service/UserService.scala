@@ -23,10 +23,10 @@ class UserService @Inject()(userRepository: UserRepository)
             case None =>
                 ExceptionUtils.noSuchElementException(s"User id $userId not found!")
 
-            case Some(user) =>
+            case Some(userEntity) =>
                 Future.successful {
                     Success {
-                        User.fromEntity(user)
+                        User.fromEntity(userEntity)
                     }
                 }
         }

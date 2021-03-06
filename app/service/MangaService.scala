@@ -26,9 +26,9 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
             case None =>
                 ExceptionUtils.noSuchElementException(s"Manga id $mangaId not found!")
 
-            case Some(manga) =>
+            case Some(mangaEntity) =>
                 val data = for {
-                    manga <- convertToManga(manga)
+                    manga <- convertToManga(mangaEntity)
                     chapters <- chapterService.findAllByMangaId(mangaId)
                 } yield (manga, chapters)
 
@@ -43,6 +43,7 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
         }
     }
 
+    // TODO find out how to refactor this
     def findAllBySearchParameters(maybeTitle: Option[String],
                                   maybeFranchise: Option[String],
                                   includedGenres: Seq[String],
@@ -74,28 +75,28 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
         }
     }
 
-    private def convertToManga(manga: MangaEntity): Future[Manga] = {
-        convertToMangas(Seq(manga)).map(mangas => mangas.head)
-    }
-
-    def convertToMangas(mangas: Seq[MangaEntity]): Future[Seq[Manga]] = {
+    def convertToMangas(mangaEntities: Seq[MangaEntity]): Future[Seq[Manga]] = {
         val data = for {
-            franchises <- franchiseService.findAllGroupByMangaId()
-            genres <- genreService.findAllGroupByMangaId()
-            avgScores <- findAvgScoreGroupByMangaId()
-        } yield (franchises, genres, avgScores)
+            mangaIdToFranchises <- franchiseService.findAllGroupByMangaId()
+            mangaIdToGenres <- genreService.findAllGroupByMangaId()
+            mangaIdToAvgScores <- findAvgScoreGroupByMangaId()
+        } yield (mangaIdToFranchises, mangaIdToGenres, mangaIdToAvgScores)
 
-        data.map { case (franchises, genres, avgScores) =>
-            mangas.map { manga =>
+        data.map { case (mangaIdToFranchises, mangaIdToGenres, mangaIdToAvgScores) =>
+            mangaEntities.map { mangaEntity =>
                 Manga(
-                    id = manga.id,
-                    title = manga.title,
-                    franchises = franchises.getOrElse(manga.id, Seq.empty),
-                    genres = genres.getOrElse(manga.id, Seq.empty),
-                    avgScore = avgScores.get(manga.id)
+                    id = mangaEntity.id,
+                    title = mangaEntity.title,
+                    franchises = mangaIdToFranchises.getOrElse(mangaEntity.id, Seq.empty),
+                    genres = mangaIdToGenres.getOrElse(mangaEntity.id, Seq.empty),
+                    avgScore = mangaIdToAvgScores.get(mangaEntity.id)
                 )
             }
         }
+    }
+
+    private def convertToManga(mangaEntity: MangaEntity): Future[Manga] = {
+        convertToMangas(Seq(mangaEntity)).map(mangas => mangas.head)
     }
 
     private def findAvgScoreGroupByMangaId(): Future[Map[Int, Double]] = {
