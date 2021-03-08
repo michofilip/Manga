@@ -21,13 +21,6 @@ class UserRepository @Inject()(usersDbConfigProvider: UsersDbConfigProvider)(imp
             .result.headOption
     }
 
-    def exists(id: Int): Future[Boolean] = usersDbConfigProvider.run {
-        UserTable.all
-            .filter(user => user.id === id)
-            .exists
-            .result
-    }
-
     def create(user: UserEntity): Future[UserEntity] = usersDbConfigProvider.run {
         (UserTable.all returning UserTable.all.map(user => user.id) into ((user, id) => user.copy(id = id))) += user
     }
