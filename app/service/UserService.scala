@@ -41,26 +41,28 @@ class UserService @Inject()(userRepository: UserRepository)
 
     def update(userForm: UserForm): Future[Try[User]] = {
         val user = User.from(userForm)
+        val userEntity = User.toEntity(user)
 
-        userRepository.exists(user.id).flatMap {
-            case true =>
+        userRepository.update(userEntity).flatMap {
+            case 0 =>
                 ExceptionUtils.noSuchElementException(s"User id ${user.id} not found!")
 
-            case false =>
-                for {
-                    _ <- userRepository.update(User.toEntity(user))
-                    user <- findById(user.id)
-                } yield user
+            case _ =>
+                Future.successful {
+                    Success {
+                        user
+                    }
+                }
         }
     }
 
     def delete(userId: Int): Future[Try[Unit]] = {
-        userRepository.exists(userId).flatMap {
-            case false =>
+        userRepository.delete(userId).flatMap {
+            case 0 =>
                 ExceptionUtils.noSuchElementException(s"User id $userId not found!")
 
-            case true =>
-                userRepository.delete(userId).map { _ =>
+            case _ =>
+                Future.successful {
                     Success()
                 }
         }

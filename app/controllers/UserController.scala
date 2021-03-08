@@ -58,7 +58,7 @@ class UserController @Inject()(val controllerComponents: ControllerComponents,
 
     def delete(userId: Int): Action[AnyContent] = Action.async { implicit request =>
         userService.delete(userId).map {
-            case Success(_) => Ok
+            case Success(_) => NoContent
             case Failure(e) => NotFound(e.getMessage)
         }
     }
