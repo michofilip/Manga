@@ -13,7 +13,8 @@ import scala.util.{Success, Try}
 class MangaService @Inject()(mangaRepository: MangaRepository,
                              chapterService: ChapterService,
                              genreService: GenreService,
-                             franchiseService: FranchiseService)
+                             franchiseService: FranchiseService,
+                             mangaAvgScoreService: MangaAvgScoreService)
                             (implicit ec: ExecutionContext) {
 
     def findAll(): Future[Seq[Manga]] = {
@@ -79,7 +80,7 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
         val data = for {
             mangaIdToFranchises <- franchiseService.findAllGroupByMangaId()
             mangaIdToGenres <- genreService.findAllGroupByMangaId()
-            mangaIdToAvgScores <- findAvgScoreGroupByMangaId()
+            mangaIdToAvgScores <- mangaAvgScoreService.findAvgScoreGroupByMangaId()
         } yield (mangaIdToFranchises, mangaIdToGenres, mangaIdToAvgScores)
 
         data.map { case (mangaIdToFranchises, mangaIdToGenres, mangaIdToAvgScores) =>
@@ -97,14 +98,6 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
 
     private def convertToManga(mangaEntity: MangaEntity): Future[Manga] = {
         convertToMangas(Seq(mangaEntity)).map(mangas => mangas.head)
-    }
-
-    private def findAvgScoreGroupByMangaId(): Future[Map[Int, Double]] = {
-        mangaRepository.findAvgScoreGroupByMangaId().map { mangaIdAvgScores =>
-            mangaIdAvgScores.collect { case (mangaId, Some(avgScore)) =>
-                mangaId -> avgScore
-            }.toMap
-        }
     }
 
 }
