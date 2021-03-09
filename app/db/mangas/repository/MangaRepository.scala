@@ -49,11 +49,4 @@ class MangaRepository @Inject()(mangasDbConfigProvider: MangasDbConfigProvider)(
             .result
     }
 
-    def findAvgScoreGroupByMangaId(): Future[Seq[(Int, Option[Double])]] = mangasDbConfigProvider.run {
-        AccountMangaTable.all
-            .groupBy(accountManga => accountManga.mangaId)
-            .map { case (mangaId, accountMangas) =>
-                mangaId -> accountMangas.map(accountManga => accountManga.score).avg
-            }.result
-    }
 }
