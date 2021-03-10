@@ -3,7 +3,7 @@ package db.mangas.model
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery
 
-class MangaAvgScoreView(t: Tag) extends Table[(Int, Double)](t, "manga_avg_score") {
+class MangaAvgScoreView(t: Tag) extends Table[(Int, Double)](t, "v_manga_avg_score") {
 
     def mangaId = column[Int]("manga_id")
 
