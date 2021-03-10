@@ -53,8 +53,17 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
             }
         } else {
 
-            mangaRepository.findAllByTitleAndFranchiseAndGenresIn(maybeTitle, maybeFranchise, includedGenres)
-                .flatMap(convertToMangas)
+            val mangaEntities = for {
+                includedMangaEntities <- mangaRepository.findAllByTitleAndFranchiseAndGenresIn(maybeTitle, maybeFranchise, includedGenres)
+                excludedMangaEntities <- mangaRepository.findAllByGenres(excludedGenres)
+            } yield {
+                (includedMangaEntities.toSet -- excludedMangaEntities.toSet).toSeq
+            }
+
+            mangaEntities.flatMap(convertToMangas)
+
+            //            mangaRepository.findAllByTitleAndFranchiseAndGenresIn(maybeTitle, maybeFranchise, includedGenres)
+            //                .flatMap(convertToMangas)
 
             //            val eventualNone = Future(Seq.empty)
             //            val eventualAll = mangaRepository.findAll()
