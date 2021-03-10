@@ -60,17 +60,18 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
             val eventualByIncludedGenres = if (includedGenres.isEmpty) eventualAll else mangaRepository.findAllByGenres(includedGenres)
             val eventualByExcludedGenres = if (excludedGenres.isEmpty) eventualNone else mangaRepository.findAllByGenres(excludedGenres)
 
-            {
-                for {
-                    all <- eventualAll
-                    byTitle <- eventualByTitle
-                    byFranchise <- eventualByFranchise
-                    byIncludedGenres <- eventualByIncludedGenres
-                    byExcludedGenres <- eventualByExcludedGenres
-                } yield {
-                    ((all.toSet & byTitle.toSet & byFranchise.toSet & byIncludedGenres.toSet) diff byExcludedGenres.toSet).toSeq
-                }
-            }.flatMap(convertToMangas)
+
+            val mangaEntities = for {
+                all <- eventualAll
+                byTitle <- eventualByTitle
+                byFranchise <- eventualByFranchise
+                byIncludedGenres <- eventualByIncludedGenres
+                byExcludedGenres <- eventualByExcludedGenres
+            } yield {
+                ((all.toSet & byTitle.toSet & byFranchise.toSet & byIncludedGenres.toSet) diff byExcludedGenres.toSet).toSeq
+            }
+
+            mangaEntities.flatMap(convertToMangas)
         }
     }
 
