@@ -1,7 +1,7 @@
 package service
 
 import db.mangas.repository.AccountRepository
-import dto.{AccountDetails, Account}
+import dto.{Account, AccountDetails}
 import utils.ExceptionUtils
 
 import javax.inject.{Inject, Singleton}
@@ -23,12 +23,10 @@ class AccountService @Inject()(accountRepository: AccountRepository,
             case Some(accountEntity) =>
                 userService.findById(accountEntity.userId).flatMap {
                     case Success(user) =>
-                        val data = for {
+                        for {
                             accountMangas <- accountMangaService.findAllByAccount(accountId)
                             tags <- tagService.findAllByAccountId(accountId)
-                        } yield (accountMangas, tags)
-
-                        data.map { case (accountMangas, tags) =>
+                        } yield {
                             val account = Account(
                                 id = accountEntity.id,
                                 isActive = accountEntity.isActive,
