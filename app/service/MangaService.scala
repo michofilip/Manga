@@ -53,24 +53,27 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
             }
         } else {
 
-            val eventualNone = Future(Seq.empty)
-            val eventualAll = mangaRepository.findAll()
-            val eventualByTitle = maybeTitle.fold(eventualAll)(mangaRepository.findAllByTitle)
-            val eventualByFranchise = maybeFranchise.fold(eventualAll)(mangaRepository.findAllByFranchise)
-            val eventualByIncludedGenres = if (includedGenres.isEmpty) eventualAll else mangaRepository.findAllByGenres(includedGenres)
-            val eventualByExcludedGenres = if (excludedGenres.isEmpty) eventualNone else mangaRepository.findAllByGenres(excludedGenres)
+            mangaRepository.findAllByTitleAndFranchiseAndGenresIn(maybeTitle, maybeFranchise, includedGenres)
+                .flatMap(convertToMangas)
 
-            val mangaEntities = for {
-                all <- eventualAll
-                byTitle <- eventualByTitle
-                byFranchise <- eventualByFranchise
-                byIncludedGenres <- eventualByIncludedGenres
-                byExcludedGenres <- eventualByExcludedGenres
-            } yield {
-                ((all.toSet & byTitle.toSet & byFranchise.toSet & byIncludedGenres.toSet) diff byExcludedGenres.toSet).toSeq
-            }
-
-            mangaEntities.flatMap(convertToMangas)
+            //            val eventualNone = Future(Seq.empty)
+            //            val eventualAll = mangaRepository.findAll()
+            //            val eventualByTitle = maybeTitle.fold(eventualAll)(mangaRepository.findAllByTitle)
+            //            val eventualByFranchise = maybeFranchise.fold(eventualAll)(mangaRepository.findAllByFranchise)
+            //            val eventualByIncludedGenres = if (includedGenres.isEmpty) eventualAll else mangaRepository.findAllByGenres(includedGenres)
+            //            val eventualByExcludedGenres = if (excludedGenres.isEmpty) eventualNone else mangaRepository.findAllByGenres(excludedGenres)
+            //
+            //            val mangaEntities = for {
+            //                all <- eventualAll
+            //                byTitle <- eventualByTitle
+            //                byFranchise <- eventualByFranchise
+            //                byIncludedGenres <- eventualByIncludedGenres
+            //                byExcludedGenres <- eventualByExcludedGenres
+            //            } yield {
+            //                ((all.toSet & byTitle.toSet & byFranchise.toSet & byIncludedGenres.toSet) diff byExcludedGenres.toSet).toSeq
+            //            }
+            //
+            //            mangaEntities.flatMap(convertToMangas)
         }
     }
 
