@@ -15,13 +15,11 @@ class AccountMangaService @Inject()(accountMangaRepository: AccountMangaReposito
                                    (implicit ec: ExecutionContext) {
 
     def findAllByAccount(accountId: Int): Future[Seq[AccountManga]] = {
-        val data = for {
+        for {
             accountMangaWithMangaEntities <- accountMangaRepository.findAllWithMangasByAccountId(accountId)
             (accountMangaEntities, mangaIdToManga) <- extractFromAccountMangasWithMangas(accountMangaWithMangaEntities)
             mangaIdToTags <- tagService.findAllByAccountIdGroupByMangaId(accountId)
-        } yield (accountMangaEntities, mangaIdToManga, mangaIdToTags)
-
-        data.map { case (accountMangaEntities, mangaIdToManga, mangaIdToTags) =>
+        } yield {
             accountMangaEntities.map { accountMangaEntity =>
                 AccountManga.fromEntity(accountMangaEntity, mangaIdToManga(accountMangaEntity.mangaId), mangaIdToTags.getOrElse(accountMangaEntity.mangaId, Seq.empty))
             }

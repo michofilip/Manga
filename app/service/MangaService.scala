@@ -60,7 +60,6 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
             val eventualByIncludedGenres = if (includedGenres.isEmpty) eventualAll else mangaRepository.findAllByGenres(includedGenres)
             val eventualByExcludedGenres = if (excludedGenres.isEmpty) eventualNone else mangaRepository.findAllByGenres(excludedGenres)
 
-
             val mangaEntities = for {
                 all <- eventualAll
                 byTitle <- eventualByTitle
