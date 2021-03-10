@@ -28,12 +28,10 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
                 ExceptionUtils.noSuchElementException(s"Manga id $mangaId not found!")
 
             case Some(mangaEntity) =>
-                val data = for {
+                for {
                     manga <- convertToManga(mangaEntity)
                     chapters <- chapterService.findAllByMangaId(mangaId)
-                } yield (manga, chapters)
-
-                data.map { case (manga, chapters) =>
+                } yield {
                     Success {
                         MangaWithChapters(
                             manga = manga,
@@ -62,28 +60,26 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
             val eventualByIncludedGenres = if (includedGenres.isEmpty) eventualAll else mangaRepository.findAllByGenres(includedGenres)
             val eventualByExcludedGenres = if (excludedGenres.isEmpty) eventualNone else mangaRepository.findAllByGenres(excludedGenres)
 
-            val data = for {
+            val mangaEntities = for {
                 all <- eventualAll
                 byTitle <- eventualByTitle
                 byFranchise <- eventualByFranchise
                 byIncludedGenres <- eventualByIncludedGenres
                 byExcludedGenres <- eventualByExcludedGenres
-            } yield (all.toSet, byTitle.toSet, byFranchise.toSet, byIncludedGenres.toSet, byExcludedGenres.toSet)
+            } yield {
+                ((all.toSet & byTitle.toSet & byFranchise.toSet & byIncludedGenres.toSet) diff byExcludedGenres.toSet).toSeq
+            }
 
-            data.map { case (all, byTitle, byFranchise, byIncludedGenres, byExcludedGenres) =>
-                ((all & byTitle & byFranchise & byIncludedGenres) diff byExcludedGenres).toSeq
-            }.flatMap(convertToMangas)
+            mangaEntities.flatMap(convertToMangas)
         }
     }
 
     def convertToMangas(mangaEntities: Seq[MangaEntity]): Future[Seq[Manga]] = {
-        val data = for {
+        for {
             mangaIdToFranchises <- franchiseService.findAllGroupByMangaId()
             mangaIdToGenres <- genreService.findAllGroupByMangaId()
             mangaIdToAvgScores <- mangaAvgScoreService.findAvgScoreGroupByMangaId()
-        } yield (mangaIdToFranchises, mangaIdToGenres, mangaIdToAvgScores)
-
-        data.map { case (mangaIdToFranchises, mangaIdToGenres, mangaIdToAvgScores) =>
+        } yield {
             mangaEntities.map { mangaEntity =>
                 Manga(
                     id = mangaEntity.id,

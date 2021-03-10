@@ -37,12 +37,10 @@ class ChapterService @Inject()(chapterRepository: ChapterRepository,
                 ExceptionUtils.noSuchElementException(s"Chapter id $chapterId not found!")
 
             case Some(chapterEntity) =>
-                val data = for {
+                for {
                     chapters <- findAllByMangaId(chapterEntity.mangaId)
                     pages <- pageService.findByChapterId(chapterId)
-                } yield (chapters, pages)
-
-                data.map { case (chapters, pages) =>
+                } yield {
                     val (previousChapter, nextChapter) = extractPreviousAndNextChapter(chapterId, chapters)
 
                     Success {
