@@ -21,7 +21,11 @@ class AccountMangaService @Inject()(accountMangaRepository: AccountMangaReposito
             mangaIdToTags <- tagService.findAllByAccountIdGroupByMangaId(accountId)
         } yield {
             accountMangaEntities.map { accountMangaEntity =>
-                AccountManga.fromEntity(accountMangaEntity, mangaIdToManga(accountMangaEntity.mangaId), mangaIdToTags.getOrElse(accountMangaEntity.mangaId, Seq.empty))
+                AccountManga.fromEntity(
+                    accountMangaEntity = accountMangaEntity,
+                    manga = mangaIdToManga(accountMangaEntity.mangaId),
+                    tags = mangaIdToTags.getOrElse(accountMangaEntity.mangaId, Seq.empty)
+                )
             }
         }
     }
