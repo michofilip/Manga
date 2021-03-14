@@ -1,6 +1,7 @@
 package dto
 
 import db.mangas.model.TagTable.TagEntity
+import form.TagForm
 import play.api.libs.json.{Json, OWrites}
 
 case class Tag(id: Int, tag: String)
@@ -17,6 +18,14 @@ object Tag {
 
     def fromEntities(tagEntities: Seq[TagEntity]): Seq[Tag] = {
         tagEntities.map(fromEntity)
+    }
+
+    def toEntity(tagForm: TagForm): TagEntity = {
+        TagEntity(
+            accountId = tagForm.accountId,
+            tag = tagForm.tag,
+            id = tagForm.id.getOrElse(0)
+        )
     }
 
 }

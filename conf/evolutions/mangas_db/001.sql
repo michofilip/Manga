@@ -96,8 +96,10 @@ CREATE TABLE IF NOT EXISTS manga_tag
     tag_id   INT NOT NULL,
 
     CONSTRAINT manga_fk FOREIGN KEY (manga_id) REFERENCES manga (id),
-    CONSTRAINT tag_fk FOREIGN KEY (tag_id) REFERENCES tag (id)
+    CONSTRAINT tag_fk FOREIGN KEY (tag_id) REFERENCES tag (id) ON DELETE CASCADE
 );
+
+CREATE UNIQUE INDEX manga_tag_idx ON manga_tag (manga_id, tag_id);
 
 
 -- !Downs

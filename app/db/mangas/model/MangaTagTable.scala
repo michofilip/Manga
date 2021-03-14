@@ -10,11 +10,13 @@ class MangaTagTable(t: Tag) extends Table[(Int, Int)](t, "manga_tag") {
 
     def * = (mangaId, tagId)
 
+    def mangaTagIdx = index("manga_tag_idx", (mangaId, tagId), unique = true)
+
     def mangaFk = foreignKey("manga_fk", mangaId, MangaTable.all)(_.id)
 
     def manga = mangaFk.filter(_.id === mangaId)
 
-    def tagFk = foreignKey("tag_fk", tagId, TagTable.all)(_.id)
+    def tagFk = foreignKey("tag_fk", tagId, TagTable.all)(_.id, onDelete = ForeignKeyAction.Cascade)
 
     def tag = tagFk.filter(_.id === tagId)
 

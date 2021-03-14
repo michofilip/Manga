@@ -32,6 +32,7 @@ class UserService @Inject()(userRepository: UserRepository)
         }
     }
 
+    // TODO return try of user
     def create(userForm: UserForm): Future[User] = {
         val user = User.from(userForm)
 
