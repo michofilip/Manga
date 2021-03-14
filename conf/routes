@@ -26,5 +26,9 @@ DELETE        /users/$id<[0-9]+>           controllers.UserController.delete(id:
 
 GET           /accounts/$id<[0-9]+>        controllers.AccountController.findById(id: Int)
 
+POST          /tags                        controllers.TagController.create()
+PUT           /tags                        controllers.TagController.update()
+DELETE        /tags/$id<[0-9]+>            controllers.TagController.delete(id: Int)
+
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                controllers.Assets.versioned(path="/public", file: Asset)

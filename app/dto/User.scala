@@ -27,6 +27,7 @@ object User {
         )
     }
 
+    // TODO convert directly to entity
     def from(userForm: UserForm): User = {
         User(
             id = userForm.id.getOrElse(0),
