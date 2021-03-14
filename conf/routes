@@ -4,31 +4,33 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET           /                            controllers.HomeController.index()
+GET           /                                                  controllers.HomeController.index()
 
-GET           /mangas                      controllers.MangaController.findAll()
-GET           /mangas/$id<[0-9]+>          controllers.MangaController.findById(id: Int)
-GET           /mangas/search               controllers.MangaController.findAllBySearchParameters(title: Option[String], franchise: Option[String], genre: Seq[String], nogenre: Seq[String])
+GET           /mangas                                            controllers.MangaController.findAll()
+GET           /mangas/$mangaId<[0-9]+>                           controllers.MangaController.findById(mangaId: Int)
+GET           /mangas/search                                     controllers.MangaController.findAllBySearchParameters(title: Option[String], franchise: Option[String], genre: Seq[String], nogenre: Seq[String])
 
-GET           /chapters/$id<[0-9]+>        controllers.ChapterController.findById(id: Int)
+GET           /chapters/$chapterId<[0-9]+>                       controllers.ChapterController.findById(chapterId: Int)
 
-GET           /genres                      controllers.GenreController.findAll()
+GET           /genres                                            controllers.GenreController.findAll()
 
-GET           /franchises                  controllers.FranchiseController.findAll()
+GET           /franchises                                        controllers.FranchiseController.findAll()
 
-GET           /files/:key                  controllers.FileController.findByKey(key: String)
+GET           /files/:key                                        controllers.FileController.findByKey(key: String)
 
-GET           /users                       controllers.UserController.findAll()
-POST          /users                       controllers.UserController.create()
-PUT           /users                       controllers.UserController.update()
-GET           /users/$id<[0-9]+>           controllers.UserController.findById(id: Int)
-DELETE        /users/$id<[0-9]+>           controllers.UserController.delete(id: Int)
+GET           /users                                             controllers.UserController.findAll()
+POST          /users                                             controllers.UserController.create()
+PUT           /users                                             controllers.UserController.update()
+GET           /users/$userId<[0-9]+>                             controllers.UserController.findById(userId: Int)
+DELETE        /users/$userId<[0-9]+>                             controllers.UserController.delete(userId: Int)
 
-GET           /accounts/$id<[0-9]+>        controllers.AccountController.findById(id: Int)
+GET           /accounts/$accountId<[0-9]+>                       controllers.AccountController.findById(accountId: Int)
 
-POST          /tags                        controllers.TagController.create()
-PUT           /tags                        controllers.TagController.update()
-DELETE        /tags/$id<[0-9]+>            controllers.TagController.delete(id: Int)
+POST          /tags                                              controllers.TagController.create()
+PUT           /tags                                              controllers.TagController.update()
+DELETE        /tags/$tagId<[0-9]+>                               controllers.TagController.delete(tagId: Int)
+POST          /tags/$tagId<[0-9]+>/manga/$mangaId<[0-9]+>        controllers.TagController.assignTag(tagId: Int, mangaId: Int)
+DELETE        /tags/$tagId<[0-9]+>/manga/$mangaId<[0-9]+>        controllers.TagController.unAssignTag(tagId: Int, mangaId: Int)
 
 # Map static resources from the /public folder to the /assets URL path
-GET           /assets/*file                controllers.Assets.versioned(path="/public", file: Asset)
+GET           /assets/*file                                      controllers.Assets.versioned(path="/public", file: Asset)

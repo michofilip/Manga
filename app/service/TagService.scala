@@ -7,7 +7,7 @@ import utils.ExceptionUtils
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success, Try}
+import scala.util.{Success, Try}
 
 @Singleton
 class TagService @Inject()(tagRepository: TagRepository)
@@ -27,17 +27,13 @@ class TagService @Inject()(tagRepository: TagRepository)
     def create(tagForm: TagForm): Future[Try[Tag]] = {
         val tagEntity = Tag.toEntity(tagForm)
 
-        tagRepository.create(tagEntity)
-            .map { tagEntity =>
-                Success {
-                    Tag.fromEntity(tagEntity)
-                }
+        tagRepository.create(tagEntity).map { tagEntity =>
+            Success {
+                Tag.fromEntity(tagEntity)
             }
-            .recover { case exception =>
-                Failure {
-                    exception
-                }
-            }
+        }.recoverWith { case exception =>
+            ExceptionUtils.futureFailure(exception)
+        }
     }
 
     def update(tagForm: TagForm): Future[Try[Tag]] = {
