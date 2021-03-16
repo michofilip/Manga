@@ -1,7 +1,7 @@
 package service
 
 import db.mangas.repository.MangaTagRepository
-import utils.ExceptionUtils
+import utils.FutureUtils
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -17,20 +17,18 @@ class MangaTagService @Inject()(mangaTagRepository: MangaTagRepository)
                 Success((): Unit)
             }
         }.recoverWith { case exception =>
-            ExceptionUtils.futureFailure(exception)
+            FutureUtils.futureFailure(exception)
         }
     }
 
     def unAssignTag(tagId: Int, mangaId: Int): Future[Try[Unit]] = {
         mangaTagRepository.delete(tagId, mangaId).flatMap {
             case 0 =>
-                ExceptionUtils.noSuchElementException(s"Tag id $tagId is not assign to manga id $mangaId!")
+                FutureUtils.noSuchElementException(s"Tag id $tagId is not assign to manga id $mangaId!")
             case _ =>
-                Future.successful {
-                    Success((): Unit)
-                }
+                FutureUtils.futureSuccess
         }.recoverWith { case exception =>
-            ExceptionUtils.futureFailure(exception)
+            FutureUtils.futureFailure(exception)
         }
     }
 

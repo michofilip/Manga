@@ -3,7 +3,7 @@ package service
 import db.mangas.model.MangaTable.MangaEntity
 import db.mangas.repository.MangaRepository
 import dto.{Manga, MangaWithChapters}
-import utils.ExceptionUtils
+import utils.FutureUtils
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -25,7 +25,7 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
     def findById(mangaId: Int): Future[Try[MangaWithChapters]] = {
         mangaRepository.findById(mangaId).flatMap {
             case None =>
-                ExceptionUtils.noSuchElementException(s"Manga id $mangaId not found!")
+                FutureUtils.noSuchElementException(s"Manga id $mangaId not found!")
 
             case Some(mangaEntity) =>
                 for {

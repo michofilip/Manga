@@ -3,7 +3,7 @@ package service
 import db.mangas.repository.TagRepository
 import dto.Tag
 import form.TagForm
-import utils.ExceptionUtils
+import utils.FutureUtils
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,7 +32,7 @@ class TagService @Inject()(tagRepository: TagRepository)
                 Tag.fromEntity(tagEntity)
             }
         }.recoverWith { case exception =>
-            ExceptionUtils.futureFailure(exception)
+            FutureUtils.futureFailure(exception)
         }
     }
 
@@ -41,26 +41,20 @@ class TagService @Inject()(tagRepository: TagRepository)
 
         tagRepository.update(tagEntity).flatMap {
             case 0 =>
-                ExceptionUtils.noSuchElementException(s"Tag id ${tagEntity.id} not found!")
+                FutureUtils.noSuchElementException(s"Tag id ${tagEntity.id} not found!")
 
             case _ =>
-                Future.successful {
-                    Success {
-                        Tag.fromEntity(tagEntity)
-                    }
-                }
+                FutureUtils.futureSuccess(Tag.fromEntity(tagEntity))
         }
     }
 
     def delete(tagId: Int): Future[Try[Unit]] = {
         tagRepository.delete(tagId).flatMap {
             case 0 =>
-                ExceptionUtils.noSuchElementException(s"Tag id $tagId not found!")
+                FutureUtils.noSuchElementException(s"Tag id $tagId not found!")
 
             case _ =>
-                Future.successful {
-                    Success((): Unit)
-                }
+                FutureUtils.futureSuccess
         }
     }
 
