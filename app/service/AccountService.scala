@@ -2,7 +2,7 @@ package service
 
 import db.mangas.repository.AccountRepository
 import dto.{Account, AccountDetails}
-import utils.ExceptionUtils
+import utils.FutureUtils
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -18,7 +18,7 @@ class AccountService @Inject()(accountRepository: AccountRepository,
     def findById(accountId: Int): Future[Try[AccountDetails]] = {
         accountRepository.findById(accountId).flatMap {
             case None =>
-                ExceptionUtils.noSuchElementException(s"Account id $accountId not found!")
+                FutureUtils.noSuchElementException(s"Account id $accountId not found!")
 
             case Some(accountEntity) =>
                 userService.findById(accountEntity.userId).flatMap {
@@ -43,7 +43,7 @@ class AccountService @Inject()(accountRepository: AccountRepository,
                         }
 
                     case Failure(exception) =>
-                        ExceptionUtils.futureFailure(exception)
+                        FutureUtils.futureFailure(exception)
                 }
         }
     }

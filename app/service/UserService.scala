@@ -3,11 +3,11 @@ package service
 import db.users.repository.UserRepository
 import dto.User
 import form.UserForm
-import utils.ExceptionUtils
+import utils.FutureUtils
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Success, Try}
+import scala.util.Try
 
 @Singleton
 class UserService @Inject()(userRepository: UserRepository)
@@ -21,14 +21,10 @@ class UserService @Inject()(userRepository: UserRepository)
     def findById(userId: Int): Future[Try[User]] = {
         userRepository.findById(userId).flatMap {
             case None =>
-                ExceptionUtils.noSuchElementException(s"User id $userId not found!")
+                FutureUtils.noSuchElementException(s"User id $userId not found!")
 
             case Some(userEntity) =>
-                Future.successful {
-                    Success {
-                        User.fromEntity(userEntity)
-                    }
-                }
+                FutureUtils.futureSuccess(User.fromEntity(userEntity))
         }
     }
 
@@ -46,26 +42,20 @@ class UserService @Inject()(userRepository: UserRepository)
 
         userRepository.update(userEntity).flatMap {
             case 0 =>
-                ExceptionUtils.noSuchElementException(s"User id ${user.id} not found!")
+                FutureUtils.noSuchElementException(s"User id ${user.id} not found!")
 
             case _ =>
-                Future.successful {
-                    Success {
-                        user
-                    }
-                }
+                FutureUtils.futureSuccess(user)
         }
     }
 
     def delete(userId: Int): Future[Try[Unit]] = {
         userRepository.delete(userId).flatMap {
             case 0 =>
-                ExceptionUtils.noSuchElementException(s"User id $userId not found!")
+                FutureUtils.noSuchElementException(s"User id $userId not found!")
 
             case _ =>
-                Future.successful {
-                    Success()
-                }
+                FutureUtils.futureSuccess
         }
     }
 
