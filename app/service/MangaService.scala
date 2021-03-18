@@ -67,7 +67,7 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
 
         for {
             mangaIdToFranchises <- franchiseService.findAllGroupByMangaId(mangaIds)
-            mangaIdToGenres <- genreService.findAllGroupByMangaId()
+            mangaIdToGenres <- genreService.findAllGroupByMangaId(mangaIds)
             mangaIdToAvgScores <- mangaAvgScoreService.findAvgScoreGroupByMangaId()
         } yield {
             mangaEntities.map { mangaEntity =>
