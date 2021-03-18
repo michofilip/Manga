@@ -15,8 +15,9 @@ class GenreRepository @Inject()(mangasDbConfigProvider: MangasDbConfigProvider)(
         GenreTable.all.result
     }
 
-    def findAllGroupByMangaId(): Future[Seq[(Int, GenreEntity)]] = mangasDbConfigProvider.run {
+    def findAllByIdInGroupByMangaId(mangaIds: Seq[Int]): Future[Seq[(Int, GenreEntity)]] = mangasDbConfigProvider.run {
         MangaTable.all
+            .filter(manga => manga.id inSet mangaIds)
             .flatMap { manga =>
                 manga.genres.map(genre => manga.id -> genre)
             }.result

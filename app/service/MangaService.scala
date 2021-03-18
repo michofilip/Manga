@@ -63,10 +63,12 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
     }
 
     def convertToMangas(mangaEntities: Seq[MangaEntity]): Future[Seq[Manga]] = {
+        val mangaIds = mangaEntities.map(mangaEntity => mangaEntity.id)
+
         for {
-            mangaIdToFranchises <- franchiseService.findAllGroupByMangaId()
-            mangaIdToGenres <- genreService.findAllGroupByMangaId()
-            mangaIdToAvgScores <- mangaAvgScoreService.findAvgScoreGroupByMangaId()
+            mangaIdToFranchises <- franchiseService.findAllByIdInGroupByMangaId(mangaIds)
+            mangaIdToGenres <- genreService.findAllByIdInGroupByMangaId(mangaIds)
+            mangaIdToAvgScores <- mangaAvgScoreService.findAllByIdInAvgScoreGroupByMangaId(mangaIds)
         } yield {
             mangaEntities.map { mangaEntity =>
                 Manga(
