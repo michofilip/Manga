@@ -15,7 +15,7 @@ class MangaAvgScoreRepository @Inject()(mangasDbConfigProvider: MangasDbConfigPr
         MangaAvgScoreView.all.result
     }
 
-    def findAll(mangaIds: Seq[Int]): Future[Seq[(Int, Double)]] = mangasDbConfigProvider.run {
+    def findAllByIdIn(mangaIds: Seq[Int]): Future[Seq[(Int, Double)]] = mangasDbConfigProvider.run {
         MangaAvgScoreView.all
             .filter(mangaAvgScore => mangaAvgScore.mangaId inSet mangaIds)
             .result

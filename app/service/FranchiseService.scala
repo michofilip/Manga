@@ -22,8 +22,8 @@ class FranchiseService @Inject()(franchiseRepository: FranchiseRepository)
         }
     }
 
-    def findAllGroupByMangaId(mangaIds: Seq[Int]): Future[Map[Int, Seq[Franchise]]] = {
-        franchiseRepository.findAllGroupByMangaId(mangaIds).map { mangaIdFranchiseEntities =>
+    def findAllByIdInGroupByMangaId(mangaIds: Seq[Int]): Future[Map[Int, Seq[Franchise]]] = {
+        franchiseRepository.findAllByIdInGroupByMangaId(mangaIds).map { mangaIdFranchiseEntities =>
             mangaIdFranchiseEntities.groupMap { case (mangaId, _) => mangaId } { case (_, franchiseEntity) => Franchise.fromEntity(franchiseEntity) }
         }
     }

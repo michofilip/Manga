@@ -66,9 +66,9 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
         val mangaIds = mangaEntities.map(mangaEntity => mangaEntity.id)
 
         for {
-            mangaIdToFranchises <- franchiseService.findAllGroupByMangaId(mangaIds)
-            mangaIdToGenres <- genreService.findAllGroupByMangaId(mangaIds)
-            mangaIdToAvgScores <- mangaAvgScoreService.findAvgScoreGroupByMangaId(mangaIds)
+            mangaIdToFranchises <- franchiseService.findAllByIdInGroupByMangaId(mangaIds)
+            mangaIdToGenres <- genreService.findAllByIdInGroupByMangaId(mangaIds)
+            mangaIdToAvgScores <- mangaAvgScoreService.findAllByIdInAvgScoreGroupByMangaId(mangaIds)
         } yield {
             mangaEntities.map { mangaEntity =>
                 Manga(
