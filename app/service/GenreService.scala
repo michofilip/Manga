@@ -15,13 +15,6 @@ class GenreService @Inject()(genreRepository: GenreRepository)
             .map(Genre.fromEntities)
     }
 
-    @Deprecated
-    def findAllGroupByMangaId(): Future[Map[Int, Seq[Genre]]] = {
-        genreRepository.findAllGroupByMangaId().map { mangaIdGenreEntities =>
-            mangaIdGenreEntities.groupMap { case (mangaId, _) => mangaId } { case (_, genreEntity) => Genre.fromEntity(genreEntity) }
-        }
-    }
-
     def findAllByIdInGroupByMangaId(mangaIds: Seq[Int]): Future[Map[Int, Seq[Genre]]] = {
         genreRepository.findAllByIdInGroupByMangaId(mangaIds).map { mangaIdGenreEntities =>
             mangaIdGenreEntities.groupMap { case (mangaId, _) => mangaId } { case (_, genreEntity) => Genre.fromEntity(genreEntity) }

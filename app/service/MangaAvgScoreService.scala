@@ -9,16 +9,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class MangaAvgScoreService @Inject()(mangaAvgScoreRepository: MangaAvgScoreRepository)
                                     (implicit ec: ExecutionContext) {
 
-    def findAvgScore(mangaId: Int): Future[Option[Double]] = {
-        mangaAvgScoreRepository.findById(mangaId)
-    }
-
-    @Deprecated
-    def findAvgScoreGroupByMangaId(): Future[Map[Int, Double]] = {
-        mangaAvgScoreRepository.findAll()
-            .map(mangaIdAvgScores => mangaIdAvgScores.toMap)
-    }
-
     def findAllByIdInAvgScoreGroupByMangaId(mangaIds: Seq[Int]): Future[Map[Int, Double]] = {
         mangaAvgScoreRepository.findAllByIdIn(mangaIds)
             .map(mangaIdAvgScores => mangaIdAvgScores.toMap)

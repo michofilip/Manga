@@ -10,21 +10,10 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class MangaAvgScoreRepository @Inject()(mangasDbConfigProvider: MangasDbConfigProvider)(implicit ec: ExecutionContext) {
 
-    @Deprecated
-    def findAll(): Future[Seq[(Int, Double)]] = mangasDbConfigProvider.run {
-        MangaAvgScoreView.all.result
-    }
-
     def findAllByIdIn(mangaIds: Seq[Int]): Future[Seq[(Int, Double)]] = mangasDbConfigProvider.run {
         MangaAvgScoreView.all
             .filter(mangaAvgScore => mangaAvgScore.mangaId inSet mangaIds)
             .result
     }
 
-    def findById(mangaId: Int): Future[Option[Double]] = mangasDbConfigProvider.run {
-        MangaAvgScoreView.all
-            .filter(mangaAvgScore => mangaAvgScore.mangaId === mangaId)
-            .map(mangaAvgScore => mangaAvgScore.avgScore)
-            .result.headOption
-    }
 }

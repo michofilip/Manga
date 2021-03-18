@@ -15,14 +15,6 @@ class FranchiseRepository @Inject()(mangasDbConfigProvider: MangasDbConfigProvid
         FranchiseTable.all.result
     }
 
-    @Deprecated
-    def findAllGroupByMangaId(): Future[Seq[(Int, FranchiseEntity)]] = mangasDbConfigProvider.run {
-        MangaTable.all
-            .flatMap { manga =>
-                manga.franchises.map(franchise => manga.id -> franchise)
-            }.result
-    }
-
     def findAllByIdInGroupByMangaId(mangaIds: Seq[Int]): Future[Seq[(Int, FranchiseEntity)]] = mangasDbConfigProvider.run {
         MangaTable.all
             .filter(manga => manga.id inSet mangaIds)
