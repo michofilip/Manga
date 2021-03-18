@@ -13,8 +13,14 @@ class MangaAvgScoreService @Inject()(mangaAvgScoreRepository: MangaAvgScoreRepos
         mangaAvgScoreRepository.findById(mangaId)
     }
 
+    @Deprecated
     def findAvgScoreGroupByMangaId(): Future[Map[Int, Double]] = {
         mangaAvgScoreRepository.findAll()
+            .map(mangaIdAvgScores => mangaIdAvgScores.toMap)
+    }
+
+    def findAvgScoreGroupByMangaId(mangaIds: Seq[Int]): Future[Map[Int, Double]] = {
+        mangaAvgScoreRepository.findAll(mangaIds)
             .map(mangaIdAvgScores => mangaIdAvgScores.toMap)
     }
 
