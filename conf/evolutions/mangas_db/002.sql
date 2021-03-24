@@ -1,10 +1,26 @@
 -- !Ups
 
-CREATE OR REPLACE VIEW v_manga_avg_score AS
-SELECT manga_id, avg(score) AS avg_score
+CREATE OR REPLACE VIEW v_manga_statistics AS
+SELECT manga_id,
+       sum(case
+               when is_in_collection then 1
+               else 0
+           end
+           )        as collection,
+       sum(case
+               when is_read then 1
+               else 0
+           end
+           )        as read,
+       sum(case
+               when is_favorite then 1
+               else 0
+           end
+           )        as favorites,
+       count(score) as votes,
+       avg(score)   as avg_score
 FROM account_manga am
-WHERE score IS NOT NULL
-group by manga_id;
+GROUP BY manga_id;
 
 
 -- !Downs
