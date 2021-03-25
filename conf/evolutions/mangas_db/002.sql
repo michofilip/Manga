@@ -6,12 +6,12 @@ SELECT manga_id,
                when is_in_collection then 1
                else 0
            end
-           )        as collection,
+           )        as collections,
        sum(case
                when is_read then 1
                else 0
            end
-           )        as read,
+           )        as reads,
        sum(case
                when is_favorite then 1
                else 0
@@ -25,4 +25,4 @@ GROUP BY manga_id;
 
 -- !Downs
 
-DROP VIEW IF EXISTS v_manga_avg_score;
+DROP VIEW IF EXISTS v_manga_statistics;
