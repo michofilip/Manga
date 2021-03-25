@@ -2,7 +2,7 @@ package service
 
 import db.mangas.model.MangaTable.MangaEntity
 import db.mangas.repository.MangaRepository
-import dto.{Manga, MangaWithChapters}
+import dto.{Manga, MangaStatistics, MangaWithChapters}
 import utils.FutureUtils
 
 import javax.inject.{Inject, Singleton}
@@ -14,7 +14,7 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
                              chapterService: ChapterService,
                              genreService: GenreService,
                              franchiseService: FranchiseService,
-                             mangaAvgScoreService: MangaAvgScoreService)
+                             mangaStatisticsService: MangaStatisticsService)
                             (implicit ec: ExecutionContext) {
 
     def findAll(): Future[Seq[Manga]] = {
@@ -68,7 +68,7 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
         for {
             mangaIdToFranchises <- franchiseService.findAllByIdInGroupByMangaId(mangaIds)
             mangaIdToGenres <- genreService.findAllByIdInGroupByMangaId(mangaIds)
-            mangaIdToAvgScores <- mangaAvgScoreService.findAllByIdInAvgScoreGroupByMangaId(mangaIds)
+            mangaIdToStatistics <- mangaStatisticsService.findAllByIdInGroupByMangaId(mangaIds)
         } yield {
             mangaEntities.map { mangaEntity =>
                 Manga(
@@ -76,7 +76,7 @@ class MangaService @Inject()(mangaRepository: MangaRepository,
                     title = mangaEntity.title,
                     franchises = mangaIdToFranchises.getOrElse(mangaEntity.id, Seq.empty),
                     genres = mangaIdToGenres.getOrElse(mangaEntity.id, Seq.empty),
-                    avgScore = mangaIdToAvgScores.get(mangaEntity.id)
+                    statistics = mangaIdToStatistics.getOrElse(mangaEntity.id, MangaStatistics.defaultMangaStatistics)
                 )
             }
         }
