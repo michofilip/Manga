@@ -3,6 +3,7 @@ package db.mangas.model
 import db.mangas.model.AccountMangaTable.AccountMangaEntity
 import slick.jdbc.PostgresProfile.api._
 
+// TODO add index (accountId, mangaId)
 class AccountMangaTable(t: Tag) extends Table[AccountMangaEntity](t, "account_manga") {
 
     def accountId = column[Int]("account_id")
