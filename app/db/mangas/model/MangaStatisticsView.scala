@@ -1,9 +1,10 @@
 package db.mangas.model
 
+import db.mangas.model.MangaStatisticsView.MangaStatisticsEntity
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery
 
-class MangaStatisticsView(t: Tag) extends Table[(Int, Int, Int, Int, Int, Option[Double])](t, "v_manga_statistics") {
+class MangaStatisticsView(t: Tag) extends Table[MangaStatisticsEntity](t, "v_manga_statistics") {
 
     def mangaId = column[Int]("manga_id")
 
@@ -17,10 +18,13 @@ class MangaStatisticsView(t: Tag) extends Table[(Int, Int, Int, Int, Int, Option
 
     def avgScore = column[Option[Double]]("avg_score")
 
-    def * = (mangaId, collections, reads, favorites, votes, avgScore)
+    def * = (mangaId, collections, reads, favorites, votes, avgScore).mapTo[MangaStatisticsEntity]
 
 }
 
 object MangaStatisticsView {
     val all = TableQuery[MangaStatisticsView]
+
+    case class MangaStatisticsEntity(mangaId: Int, collections: Int, reads: Int, favorites: Int, votes: Int, avgScore: Option[Double])
+
 }

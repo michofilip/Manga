@@ -10,8 +10,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class MangaStatisticsRepository @Inject()(mangasDbConfigProvider: MangasDbConfigProvider)(implicit ec: ExecutionContext) {
 
-    // TODO return entity
-    def findAllByIdIn(mangaIds: Seq[Int]): Future[Seq[(Int, Int, Int, Int, Int, Option[Double])]] = mangasDbConfigProvider.run {
+    def findAllByIdIn(mangaIds: Seq[Int]): Future[Seq[MangaStatisticsView.MangaStatisticsEntity]] = mangasDbConfigProvider.run {
         MangaStatisticsView.all
             .filter(mangaAvgScore => mangaAvgScore.mangaId inSet mangaIds)
             .result
