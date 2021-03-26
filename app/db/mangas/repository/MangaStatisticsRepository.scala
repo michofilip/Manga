@@ -12,7 +12,7 @@ class MangaStatisticsRepository @Inject()(mangasDbConfigProvider: MangasDbConfig
 
     def findAllByIdIn(mangaIds: Seq[Int]): Future[Seq[MangaStatisticsView.MangaStatisticsEntity]] = mangasDbConfigProvider.run {
         MangaStatisticsView.all
-            .filter(mangaAvgScore => mangaAvgScore.mangaId inSet mangaIds)
+            .filter(mangaStatistics => mangaStatistics.mangaId inSet mangaIds)
             .result
     }
 
